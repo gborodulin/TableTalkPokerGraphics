@@ -1,0 +1,27 @@
+.card {
+    background-color: white;
+    position: relative;
+    height: 80px;
+    width: 70px;
+    border-radius: 5px;
+}
+
+
+
+
+.rank {
+    position: absolute;
+    font-size: 35px;
+    top: 0;
+    left: 2px;
+    letter-spacing: -3px;
+}
+
+.suit {
+    position: absolute;
+    font-size: 35px;
+    position: absolute;
+    top: 0;
+    left: 34px;
+
+}

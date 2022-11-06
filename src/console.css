@@ -1,0 +1,10 @@
+.playerConsoleBox{
+    padding-left: 1000px;
+    margin-top: 20px;
+    background-color: bisque;
+
+}
+
+input{
+    border-width: 3px;
+}

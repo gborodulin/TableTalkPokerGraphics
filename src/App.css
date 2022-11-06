@@ -1,0 +1,10 @@
+.graphics {
+  text-align: center;
+}
+
+.player-cont {
+  position: absolute;
+  bottom: 0;
+  margin: 64px;
+}
+

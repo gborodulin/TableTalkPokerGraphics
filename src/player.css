@@ -1,0 +1,18 @@
+.player {
+  margin: 16px;
+  background-color: lightgray;
+  border-radius: 4px;
+  display: flex;
+  padding: 12px;
+}
+.card {
+  font-size: 48px;
+  margin-right: 4px;
+}
+.name {
+  margin-left: 16px;
+  font-size: 48px;
+  margin-right: 16px;
+  min-width: 220px;
+  text-align: left;
+}
