@@ -28,19 +28,19 @@ function Console(props) {
     
 
     const getCorrectSetState = (player) => {
-      if(player === 'player1') return setPlayer1Console
-      if(player === 'player2') return setPlayer2Console
-      if(player === 'player3') return setPlayer3Console
-      if(player === 'player4') return setPlayer4Console
-      if(player === 'player5') return setPlayer5Console
+      if(player === '1') return setPlayer1Console
+      if(player === '2') return setPlayer2Console
+      if(player === '3') return setPlayer3Console
+      if(player === '4') return setPlayer4Console
+      if(player === '5') return setPlayer5Console
     }
 
     const getCorrectState = (player) => {
-      if(player === 'player1') return player1Console
-      if(player === 'player2') return player2Console
-      if(player === 'player3') return player3Console
-      if(player === 'player4') return player4Console
-      if(player === 'player5') return player5Console
+      if(player === '1') return player1Console
+      if(player === '2') return player2Console
+      if(player === '3') return player3Console
+      if(player === '4') return player4Console
+      if(player === '5') return player5Console
     }
 
     const handleChange = (e) => {
@@ -98,27 +98,27 @@ function Console(props) {
         <div className="console" onKeyDown={handleKeyDown}>
             <div className="playerConsoleBox">
               <div className="playerConsoleBoxName">Greg</div>
-              <input type="text" id="player1" ref={player1} value={player1Console.action} onChange={handleChange} onKeyDown={handleKeyDown}/>
+              <input type="text" id="1" ref={player1} value={player1Console.action} onChange={handleChange} onKeyDown={handleKeyDown}/>
             </div>
 
             <div className="playerConsoleBox">
               <div className="playerConsoleBoxName">Josh</div>
-              <input type="text" id="player2" ref={player2}  value={player2Console.action} onChange={handleChange} onKeyDown={handleKeyDown}/>
+              <input type="text" id="2" ref={player2}  value={player2Console.action} onChange={handleChange} onKeyDown={handleKeyDown}/>
             </div>
 
             <div className="playerConsoleBox">
               <div className="playerConsoleBoxName">David</div>
-              <input type="text" id="player3" ref={player3}  value={player3Console.action} onChange={handleChange} onKeyDown={handleKeyDown}/>
+              <input type="text" id="3" ref={player3}  value={player3Console.action} onChange={handleChange} onKeyDown={handleKeyDown}/>
             </div>
 
             <div className="playerConsoleBox">
               <div className="playerConsoleBoxName">Michael</div>
-              <input type="text" id="player4" ref={player4}  value={player4Console.action} onChange={handleChange} onKeyDown={handleKeyDown}/>
+              <input type="text" id="4" ref={player4}  value={player4Console.action} onChange={handleChange} onKeyDown={handleKeyDown}/>
             </div>
 
             <div className="playerConsoleBox">
               <div className="playerConsoleBoxName">Andrew</div>
-              <input type="text" id="player5" ref={player5}  value={player5Console.action} onChange={handleChange} onKeyDown={handleKeyDown}/>
+              <input type="text" id="5" ref={player5}  value={player5Console.action} onChange={handleChange} onKeyDown={handleKeyDown}/>
             </div>
 
             

@@ -36,10 +36,6 @@ const serialport = new SerialPort.SerialPort({
 const parser = new Readline.ReadlineParser();
 serialport.pipe(parser);
 parser.on("data", (data) => {
-  var splitData = data.split("UID: ")[1];
-  var uid = splitData.split(",")[0];
-  var antenna = splitData.split(", antenna: ")[1];
-  console.log("uid: ", uid);
-  console.log("antenna: ", antenna);
-  io.emit("serialdata", { uid, antenna });
+  console.log(data)
+  io.emit("serialdata", { data })
 });

@@ -5,15 +5,15 @@ import { genRandomCard } from "./utils";
 function Player(props) {
   // let { rank, suit } = genRandomCard();
   
-  const { name, action } = props;
+  const { graphics } = props
   
 
   return (
     <div className="player">
-      <div className="name">{name}</div>
-      <Card className="card" rank={9} suit={'♠'} />
-      <Card className="card" rank={10} suit={'♥'} />
-      <div className="action">{action}</div>
+      <div className="name">{graphics.name}</div>
+      <Card className="card" cardValue={graphics.card1} />
+      <Card className="card" cardValue={graphics.card2}/>
+      <div className="action">{graphics.action}</div>
     </div>
   );
 }
