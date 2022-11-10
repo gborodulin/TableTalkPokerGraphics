@@ -1,10 +1,17 @@
-.playerConsoleBox{
-    padding-left: 1000px;
-    margin-top: 20px;
-    background-color: bisque;
-
+.console {
+  padding-left: 1000px;
 }
 
-input{
-    border-width: 3px;
+.playerConsoleBox {
+  margin-top: 20px;
+  background-color: bisque;
+}
+
+input {
+  border-width: 3px;
+}
+
+.controlKeys {
+  font-size: large;
+  margin-top: 100px;
 }
