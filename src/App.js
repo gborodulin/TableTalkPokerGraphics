@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import io from "socket.io-client";
 import "./App.css";
 import Player from "./Player";
 import Console from "./Console";
 import CardDictionary from "./CardDictionary.js";
+import { TexasHoldem } from "poker-odds-calc";
 
 function App(props) {
   let socket = io("http://localhost:8888", { transports: ["websocket"] });
@@ -20,8 +20,6 @@ function App(props) {
     const playerGraphicsState = getCorrectGraphicsState(player);
     const playerGraphicsSetState = getCorrectGraphicsSetState(player);
 
-    console.log("card2", playerGraphicsState.card2);
-
     if (!playerGraphicsState.card1) {
       playerGraphicsSetState({ ...playerGraphicsState, card1: cardvalue });
     } else if (
@@ -29,7 +27,6 @@ function App(props) {
       playerGraphicsState.card1 !== cardvalue
     ) {
       playerGraphicsSetState({ ...playerGraphicsState, card2: cardvalue });
-    } else {
     }
   });
 
@@ -37,41 +34,47 @@ function App(props) {
     action: "",
     card1: null,
     card2: null,
-    inHand: false,
+    inHand: true,
     name: "Greg",
+    percent: null,
   });
   const [player2Graphics, setPlayer2Graphics] = useState({
     action: "",
     card1: null,
     card2: null,
-    inHand: false,
+    inHand: true,
     name: "Josh",
+    percent: null,
   });
   const [player3Graphics, setPlayer3Graphics] = useState({
     action: "",
     card1: null,
     card2: null,
-    inHand: false,
+    inHand: true,
     name: "David",
+    percent: null,
   });
   const [player4Graphics, setPlayer4Graphics] = useState({
     action: "",
     card1: null,
     card2: null,
-    inHand: false,
+    inHand: true,
     name: "Michael",
+    percent: null,
   });
   const [player5Graphics, setPlayer5Graphics] = useState({
     action: "",
     card1: null,
     card2: null,
-    inHand: false,
+    inHand: true,
     name: "Andrew",
+    percent: null,
   });
 
   const getCardValue = (cardUID) => {
     return CardDictionary[cardUID];
   };
+
   const getCorrectGraphicsState = (player) => {
     if (player === "1") return player1Graphics;
     if (player === "2") return player2Graphics;
@@ -141,7 +144,7 @@ function App(props) {
   };
 
   return (
-    <div>
+    <div className="App">
       <div className="graphics">
         <div className="player-cont">
           {player1Graphics.inHand ? (

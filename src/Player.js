@@ -13,6 +13,7 @@ function Player(props) {
       <Card className="card" cardValue={graphics.card1} />
       <Card className="card" cardValue={graphics.card2} />
       <div className="action">{graphics.action}</div>
+      <div className="percent">{graphics.percent}</div>
     </div>
   );
 }

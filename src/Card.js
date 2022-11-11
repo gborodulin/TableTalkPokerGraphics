@@ -7,8 +7,15 @@ function Card(props) {
   let suit = "";
 
   if (cardValue) {
-    rank = cardValue.split(",")[0];
-    suit = cardValue.split(",")[1];
+    rank = cardValue[0];
+    if (rank === "T") rank = "10";
+
+    let suitRaw = cardValue[1];
+
+    if (suitRaw === "c") suit = "♣";
+    if (suitRaw === "d") suit = "♦";
+    if (suitRaw === "s") suit = "♠";
+    if (suitRaw === "h") suit = "♥";
   }
 
   return (
