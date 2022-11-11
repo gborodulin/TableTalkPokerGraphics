@@ -163,11 +163,11 @@ function App(props) {
       </div>
 
       <Console
-        player1Graphics
-        player2Graphics
-        player3Graphics
-        player4Graphics
-        player5Graphics
+        player1Graphics={player1Graphics}
+        player2Graphics={player2Graphics}
+        player3Graphics={player3Graphics}
+        player4Graphics={player4Graphics}
+        player5Graphics={player5Graphics}
         newHand={newHand}
         setPlayerGraphicsAction={setPlayerGraphicsAction}
         setPlayerInHand={setPlayerInHand}

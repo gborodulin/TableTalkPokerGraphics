@@ -2,31 +2,23 @@ import "./console.css";
 import { useState, useRef, useEffect } from "react";
 
 function Console(props) {
-  const { setPlayerGraphicsAction, setPlayerInHand, newHand } = props;
+  const {
+    setPlayerGraphicsAction,
+    setPlayerInHand,
+    newHand,
+    player1Graphics,
+    player2Graphics,
+    player3Graphics,
+    player4Graphics,
+    player5Graphics,
+  } = props;
 
-  const [player1Console, setPlayer1Console] = useState({
-    name: "Greg",
-    action: "",
-  });
+  const [player1ActionInput, setPlayer1ActionInput] = useState("");
+  const [player2ActionInput, setPlayer2ActionInput] = useState("");
+  const [player3ActionInput, setPlayer3ActionInput] = useState("");
+  const [player4ActionInput, setPlayer4ActionInput] = useState("");
+  const [player5ActionInput, setPlayer5ActionInput] = useState("");
 
-  const [player2Console, setPlayer2Console] = useState({
-    name: "Josh",
-    action: "",
-  });
-
-  const [player3Console, setPlayer3Console] = useState({
-    name: "David",
-    action: "",
-  });
-
-  const [player4Console, setPlayer4Console] = useState({
-    name: "Michael",
-    action: "",
-  });
-  const [player5Console, setPlayer5Console] = useState({
-    name: "Andrew",
-    action: "",
-  });
   const [focusPlayer, setFocusPlayer] = useState(1);
 
   const player1 = useRef(null);
@@ -43,44 +35,42 @@ function Console(props) {
     if (focusPlayer === 5) player5.current.focus();
   }, [focusPlayer]);
 
-  const getCorrectSetState = (player) => {
-    if (player === "1") return setPlayer1Console;
-    if (player === "2") return setPlayer2Console;
-    if (player === "3") return setPlayer3Console;
-    if (player === "4") return setPlayer4Console;
-    if (player === "5") return setPlayer5Console;
+  const getCorrectInputSetState = (player) => {
+    if (player === "1") return setPlayer1ActionInput;
+    if (player === "2") return setPlayer2ActionInput;
+    if (player === "3") return setPlayer3ActionInput;
+    if (player === "4") return setPlayer4ActionInput;
+    if (player === "5") return setPlayer5ActionInput;
   };
 
-  const getCorrectState = (player) => {
-    if (player === "1") return player1Console;
-    if (player === "2") return player2Console;
-    if (player === "3") return player3Console;
-    if (player === "4") return player4Console;
-    if (player === "5") return player5Console;
+  const getCorrectInputState = (player) => {
+    if (player === "1") return player1ActionInput;
+    if (player === "2") return player2ActionInput;
+    if (player === "3") return player3ActionInput;
+    if (player === "4") return player4ActionInput;
+    if (player === "5") return player5ActionInput;
   };
 
   const handleChange = (e) => {
     let player = e.target.id;
     let key = e.nativeEvent.data;
 
-    const correctSetState = getCorrectSetState(player);
-    const correctState = getCorrectState(player);
+    const correctInputSetState = getCorrectInputSetState(player);
 
     if (key === "f") {
-      correctSetState({ ...correctState, action: "FOLD" });
-    } else if (key === "c")
-      correctSetState({ ...correctState, action: "CALL" });
-    else if (key === "z") correctSetState({ ...correctState, action: "CHECK" });
-    else if (key === "b") correctSetState({ ...correctState, action: "BET " });
+      correctInputSetState("FOLD");
+    } else if (key === "c") correctInputSetState("CALL");
+    else if (key === "z") correctInputSetState("CHECK");
+    else if (key === "b") correctInputSetState("BET ");
     else if (key === "q") {
-      setPlayer1Console({ ...player1Console, action: "" });
-      setPlayer2Console({ ...player2Console, action: "" });
-      setPlayer3Console({ ...player3Console, action: "" });
-      setPlayer4Console({ ...player4Console, action: "" });
-      setPlayer5Console({ ...player5Console, action: "" });
+      setPlayer1ActionInput("");
+      setPlayer2ActionInput("");
+      setPlayer3ActionInput("");
+      setPlayer4ActionInput("");
+      setPlayer5ActionInput("");
 
       newHand();
-    } else correctSetState({ ...correctState, action: e.target.value });
+    } else correctInputSetState(e.target.value);
   };
 
   const handleKeyDown = (e) => {
@@ -88,10 +78,10 @@ function Console(props) {
     if (e.key === "Enter") {
       let player = e.target.id;
 
-      const correctState = getCorrectState(player);
-      setPlayerGraphicsAction(player, correctState.action);
+      const correctInputState = getCorrectInputState(player);
+      setPlayerGraphicsAction(player, correctInputState);
 
-      if (correctState.action.includes("FOLD")) {
+      if (correctInputState.includes("FOLD")) {
         setPlayerInHand(player, false);
       }
 
@@ -114,60 +104,60 @@ function Console(props) {
   return (
     <div className="console" onKeyDown={handleKeyDown}>
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player1Console.name}</div>
+        <div className="playerConsoleBoxName">{player1Graphics.name}</div>
         <input
           type="text"
           id="1"
           ref={player1}
-          value={player1Console.action}
+          value={player1ActionInput}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
         />
       </div>
 
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player2Console.name}</div>
+        <div className="playerConsoleBoxName">{player2Graphics.name}</div>
         <input
           type="text"
           id="2"
           ref={player2}
-          value={player2Console.action}
+          value={player2ActionInput}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
         />
       </div>
 
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player3Console.name}</div>
+        <div className="playerConsoleBoxName">{player3Graphics.name}</div>
         <input
           type="text"
           id="3"
           ref={player3}
-          value={player3Console.action}
+          value={player3ActionInput}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
         />
       </div>
 
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player4Console.name}</div>
+        <div className="playerConsoleBoxName">{player4Graphics.name}</div>
         <input
           type="text"
           id="4"
           ref={player4}
-          value={player4Console.action}
+          value={player4ActionInput}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
         />
       </div>
 
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player5Console.name}</div>
+        <div className="playerConsoleBoxName">{player5Graphics.name}</div>
         <input
           type="text"
           id="5"
           ref={player5}
-          value={player5Console.action}
+          value={player5ActionInput}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
         />
@@ -175,8 +165,7 @@ function Console(props) {
 
       <div className="controlKeys">
         <p>Q - New Hand</p>
-        <p>B - Bet</p>
-
+        <p>B - Bet + Amount</p>
         <p>C - Call</p>
         <p>Z - Check</p>
         <p>F - Fold</p>
