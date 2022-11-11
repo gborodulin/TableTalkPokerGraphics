@@ -35,7 +35,8 @@ const serialport = new SerialPort.SerialPort({
 });
 const parser = new Readline.ReadlineParser();
 serialport.pipe(parser);
+
 parser.on("data", (data) => {
-  console.log(data)
-  io.emit("serialdata", { data })
+  console.log(data);
+  io.emit("serialdata", { data });
 });

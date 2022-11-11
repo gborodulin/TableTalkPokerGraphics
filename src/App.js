@@ -9,24 +9,31 @@ import { TexasHoldem } from "poker-odds-calc";
 function App(props) {
   let socket = io("http://localhost:8888", { transports: ["websocket"] });
 
+  let storedCards = [];
+
   socket.on("serialdata", (serialdata) => {
     const player = serialdata.data.split("antenna: ")[1][0];
     const cardUID = serialdata.data.split("UID: ")[1].split(",")[0];
     // console.log("player: ", player)
     // console.log("cardUID: ", cardUID)
-
     const cardvalue = getCardValue(cardUID);
     console.log(cardvalue);
-    const playerGraphicsState = getCorrectGraphicsState(player);
-    const playerGraphicsSetState = getCorrectGraphicsSetState(player);
 
-    if (!playerGraphicsState.card1) {
-      playerGraphicsSetState({ ...playerGraphicsState, card1: cardvalue });
-    } else if (
-      !playerGraphicsState.card2 &&
-      playerGraphicsState.card1 !== cardvalue
-    ) {
-      playerGraphicsSetState({ ...playerGraphicsState, card2: cardvalue });
+    if (!storedCards.includes(cardvalue)) {
+      storedCards.push(cardvalue);
+      console.log("Value added: ", cardvalue, storedCards);
+
+      const playerGraphicsState = getCorrectGraphicsState(player);
+      const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+
+      if (!playerGraphicsState.card1) {
+        playerGraphicsSetState({ ...playerGraphicsState, card1: cardvalue });
+      } else if (
+        !playerGraphicsState.card2 &&
+        playerGraphicsState.card1 !== cardvalue
+      ) {
+        playerGraphicsSetState({ ...playerGraphicsState, card2: cardvalue });
+      }
     }
   });
 
@@ -141,6 +148,8 @@ function App(props) {
       card2: null,
       inHand: true,
     });
+
+    storedCards = [];
   };
 
   return (
