@@ -14,25 +14,25 @@ function App(props) {
   socket.on("serialdata", (serialdata) => {
     const player = serialdata.data.split("antenna: ")[1][0];
     const cardUID = serialdata.data.split("UID: ")[1].split(",")[0];
-    // console.log("player: ", player)
-    // console.log("cardUID: ", cardUID)
-    const cardvalue = getCardValue(cardUID);
-    console.log(cardvalue);
+    // console.log("player: ", player);
+    // console.log("cardUID: ", cardUID);
+    const cardValue = getCardValue(cardUID);
+    console.log(cardValue);
 
-    if (!storedCards.includes(cardvalue)) {
-      storedCards.push(cardvalue);
-      console.log("Value added: ", cardvalue, storedCards);
+    if (!storedCards.includes(cardValue)) {
+      storedCards.push(cardValue);
+      console.log("Value added: ", cardValue, storedCards);
 
       const playerGraphicsState = getCorrectGraphicsState(player);
       const playerGraphicsSetState = getCorrectGraphicsSetState(player);
 
       if (!playerGraphicsState.card1) {
-        playerGraphicsSetState({ ...playerGraphicsState, card1: cardvalue });
+        playerGraphicsSetState({ ...playerGraphicsState, card1: cardValue });
       } else if (
         !playerGraphicsState.card2 &&
-        playerGraphicsState.card1 !== cardvalue
+        playerGraphicsState.card1 !== cardValue
       ) {
-        playerGraphicsSetState({ ...playerGraphicsState, card2: cardvalue });
+        playerGraphicsSetState({ ...playerGraphicsState, card2: cardValue });
       }
     }
   });
@@ -44,6 +44,7 @@ function App(props) {
     inHand: true,
     name: "Greg",
     percent: null,
+    currentPlayerBet: 0,
   });
   const [player2Graphics, setPlayer2Graphics] = useState({
     action: "",
@@ -52,6 +53,7 @@ function App(props) {
     inHand: true,
     name: "Josh",
     percent: null,
+    currentPlayerBet: 0,
   });
   const [player3Graphics, setPlayer3Graphics] = useState({
     action: "",
@@ -60,6 +62,7 @@ function App(props) {
     inHand: true,
     name: "David",
     percent: null,
+    currentPlayerBet: 0,
   });
   const [player4Graphics, setPlayer4Graphics] = useState({
     action: "",
@@ -68,6 +71,7 @@ function App(props) {
     inHand: true,
     name: "Michael",
     percent: null,
+    currentPlayerBet: 0,
   });
   const [player5Graphics, setPlayer5Graphics] = useState({
     action: "",
@@ -76,7 +80,14 @@ function App(props) {
     inHand: true,
     name: "Andrew",
     percent: null,
+    currentPlayerBet: 0,
   });
+
+  const [pot, setPot] = useState(0);
+
+  const [currentBet, setCurrentBet] = useState(0);
+
+  const [inHandPlayers, setInHandPlayers] = useState(["1", "2", "3", "4", "5"]);
 
   const getCardValue = (cardUID) => {
     return CardDictionary[cardUID];
@@ -119,6 +130,7 @@ function App(props) {
       card1: null,
       card2: null,
       inHand: true,
+      currentPlayerBet: 0,
     });
     setPlayer2Graphics({
       ...player2Graphics,
@@ -126,6 +138,7 @@ function App(props) {
       card1: null,
       card2: null,
       inHand: true,
+      currentPlayerBet: 0,
     });
     setPlayer3Graphics({
       ...player3Graphics,
@@ -133,6 +146,7 @@ function App(props) {
       card1: null,
       card2: null,
       inHand: true,
+      currentPlayerBet: 0,
     });
     setPlayer4Graphics({
       ...player4Graphics,
@@ -140,6 +154,7 @@ function App(props) {
       card1: null,
       card2: null,
       inHand: true,
+      currentPlayerBet: 0,
     });
     setPlayer5Graphics({
       ...player5Graphics,
@@ -147,9 +162,61 @@ function App(props) {
       card1: null,
       card2: null,
       inHand: true,
+      currentPlayerBet: 0,
     });
 
+    setCurrentBet(0);
+
+    setPot(0);
+
     storedCards = [];
+  };
+
+  const handleBet = (player, amount) => {
+    const playerGraphicsState = getCorrectGraphicsState(player);
+    const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+
+    if (currentBet === 0) {
+      playerGraphicsSetState({
+        ...playerGraphicsState,
+        currentPlayerBet: amount,
+      });
+
+      setCurrentBet(amount);
+
+      setPot(pot + amount);
+    } else {
+      const newPot = pot + (amount - playerGraphicsState.currentPlayerBet);
+
+      playerGraphicsSetState({
+        ...playerGraphicsState,
+        currentPlayerBet: amount,
+      });
+      setCurrentBet(amount);
+      setPot(newPot);
+    }
+  };
+
+  const handleCall = (player) => {
+    const playerGraphicsState = getCorrectGraphicsState(player);
+    const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+
+    const trueAmount = currentBet - playerGraphicsState.currentPlayerBet;
+    const newPlayerCurrentPlayerBet =
+      trueAmount + playerGraphicsState.currentPlayerBet;
+
+    playerGraphicsSetState({
+      ...playerGraphicsState,
+      currentPlayerBet: newPlayerCurrentPlayerBet,
+    });
+
+    const newPotSize = trueAmount + pot;
+    setPot(newPotSize);
+  };
+
+  const removePlayerFromHand = (player) => {
+    const newArray = inHandPlayers.filter((item) => item !== player);
+    setInHandPlayers(newArray);
   };
 
   return (
@@ -172,6 +239,8 @@ function App(props) {
             <Player graphics={player5Graphics} />
           ) : null}
         </div>
+        <div className="pot">POT: {pot}</div>
+        <div className="pot">Current Highest Bet: {currentBet}</div>
       </div>
 
       <Console
@@ -183,6 +252,10 @@ function App(props) {
         newHand={newHand}
         setPlayerGraphicsAction={setPlayerGraphicsAction}
         setPlayerInHand={setPlayerInHand}
+        handleBet={handleBet}
+        handleCall={handleCall}
+        inHandPlayers={inHandPlayers}
+        removePlayerFromHand={removePlayerFromHand}
       />
     </div>
   );

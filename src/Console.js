@@ -11,6 +11,10 @@ function Console(props) {
     player3Graphics,
     player4Graphics,
     player5Graphics,
+    handleBet,
+    handleCall,
+    inHandPlayers,
+    removePlayerFromHand,
   } = props;
 
   const [player1ActionInput, setPlayer1ActionInput] = useState("");
@@ -83,6 +87,24 @@ function Console(props) {
 
       if (correctInputState.includes("FOLD")) {
         setPlayerInHand(player, false);
+        removePlayerFromHand(player);
+      }
+
+      if (correctInputState.includes("BET")) {
+        let amountString = correctInputState.split(" ")[1];
+        let amount = parseInt(amountString);
+        handleBet(player, amount);
+
+        inHandPlayers.forEach((curPlayer) => {
+          if (curPlayer !== player) {
+            const correctInputSetState = getCorrectInputSetState(curPlayer);
+            correctInputSetState("");
+          }
+        });
+      }
+
+      if (correctInputState.includes("CALL")) {
+        handleCall(player);
       }
 
       if (focusPlayer === 5) setFocusPlayer(1);
