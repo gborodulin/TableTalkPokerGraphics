@@ -4,6 +4,7 @@ import "./App.css";
 import Player from "./Player";
 import Console from "./Console";
 import CardDictionary from "./CardDictionary.js";
+import useHistoryState from "use-history-state";
 import { TexasHoldem } from "poker-odds-calc";
 
 function App(props) {
@@ -257,26 +258,15 @@ function App(props) {
 
   return (
     <div className="App">
-      <div className="graphics">
-        <div className="player-cont">
-          {player1Graphics.inHand ? (
-            <Player graphics={player1Graphics} />
-          ) : null}
-          {player2Graphics.inHand ? (
-            <Player graphics={player2Graphics} />
-          ) : null}
-          {player3Graphics.inHand ? (
-            <Player graphics={player3Graphics} />
-          ) : null}
-          {player4Graphics.inHand ? (
-            <Player graphics={player4Graphics} />
-          ) : null}
-          {player5Graphics.inHand ? (
-            <Player graphics={player5Graphics} />
-          ) : null}
-        </div>
-        <div className="pot">POT: {pot}</div>
-        <div className="pot">Current Highest Bet: {currentBet}</div>
+      <div className="playerGraphics">
+        {player1Graphics.inHand ? <Player graphics={player1Graphics} /> : null}
+        {player2Graphics.inHand ? <Player graphics={player2Graphics} /> : null}
+        {player3Graphics.inHand ? <Player graphics={player3Graphics} /> : null}
+        {player4Graphics.inHand ? <Player graphics={player4Graphics} /> : null}
+        {player5Graphics.inHand ? <Player graphics={player5Graphics} /> : null}
+
+        {/* <div className="pot">POT: {pot}</div>
+        <div className="pot">Current Highest Bet: {currentBet}</div> */}
       </div>
 
       <Console

@@ -1,15 +1,18 @@
-.graphics {
+.playerGraphics {
   text-align: center;
-}
-
-.player-cont {
-  position: absolute;
-  bottom: 0;
-  margin: 64px;
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 20% 20% 20% 20% 20%;
 }
 
 .App {
-  background-color: blanchedalmond;
+  background-color: green;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 100%;
 }
 
 .pot {

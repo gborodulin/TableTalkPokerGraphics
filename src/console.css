@@ -1,17 +1,22 @@
 .console {
-  padding-left: 1000px;
-}
-
-.playerConsoleBox {
-  margin-top: 20px;
-  background-color: bisque;
+  text-align: center;
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 20% 20% 20% 20% 20%;
 }
 
 input {
   border-width: 3px;
+  font-size: 40px;
+}
+
+.playerConsoleBox {
+  margin: 16px;
+  padding: 12px;
 }
 
 .controlKeys {
   font-size: large;
-  margin-top: 100px;
 }

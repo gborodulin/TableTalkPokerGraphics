@@ -1,5 +1,6 @@
 import "./console.css";
 import { useState, useRef, useEffect } from "react";
+import useHistoryState from "use-history-state";
 
 function Console(props) {
   const {
@@ -18,13 +19,28 @@ function Console(props) {
     handleCheck,
   } = props;
 
-  const [player1ActionInput, setPlayer1ActionInput] = useState("");
-  const [player2ActionInput, setPlayer2ActionInput] = useState("");
-  const [player3ActionInput, setPlayer3ActionInput] = useState("");
-  const [player4ActionInput, setPlayer4ActionInput] = useState("");
-  const [player5ActionInput, setPlayer5ActionInput] = useState("");
+  const [player1ActionInput, setPlayer1ActionInput] = useHistoryState(
+    "",
+    "player1ActionInput"
+  );
+  const [player2ActionInput, setPlayer2ActionInput] = useHistoryState(
+    "",
+    "player2ActionInput"
+  );
+  const [player3ActionInput, setPlayer3ActionInput] = useHistoryState(
+    "",
+    "player3ActionInput"
+  );
+  const [player4ActionInput, setPlayer4ActionInput] = useHistoryState(
+    "",
+    "player4ActionInput"
+  );
+  const [player5ActionInput, setPlayer5ActionInput] = useHistoryState(
+    "",
+    "player5ActionInput"
+  );
 
-  const [focusPlayer, setFocusPlayer] = useState(1);
+  const [focusPlayer, setFocusPlayer] = useHistoryState(1, "focusPlayer");
 
   const player1 = useRef(null);
   const player2 = useRef(null);
@@ -130,7 +146,6 @@ function Console(props) {
   return (
     <div className="console" onKeyDown={handleKeyDown}>
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player1Graphics.name}</div>
         <input
           type="text"
           id="1"
@@ -142,7 +157,6 @@ function Console(props) {
       </div>
 
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player2Graphics.name}</div>
         <input
           type="text"
           id="2"
@@ -154,7 +168,6 @@ function Console(props) {
       </div>
 
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player3Graphics.name}</div>
         <input
           type="text"
           id="3"
@@ -166,7 +179,6 @@ function Console(props) {
       </div>
 
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player4Graphics.name}</div>
         <input
           type="text"
           id="4"
@@ -178,7 +190,6 @@ function Console(props) {
       </div>
 
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player5Graphics.name}</div>
         <input
           type="text"
           id="5"
@@ -188,7 +199,7 @@ function Console(props) {
           onKeyDown={handleKeyDown}
         />
       </div>
-
+      {/* 
       <div className="controlKeys">
         <p>Q - New Hand</p>
         <p>B - Bet + Amount</p>
@@ -197,7 +208,7 @@ function Console(props) {
         <p>F - Fold</p>
         <p>Enter - Send to Graphics</p>
         <p>Arrows - Move Up and Down</p>
-      </div>
+      </div> */}
     </div>
   );
 }
