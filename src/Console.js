@@ -15,6 +15,7 @@ function Console(props) {
     handleCall,
     inHandPlayers,
     removePlayerFromHand,
+    handleCheck,
   } = props;
 
   const [player1ActionInput, setPlayer1ActionInput] = useState("");
@@ -78,12 +79,11 @@ function Console(props) {
   };
 
   const handleKeyDown = (e) => {
-    // console.log(e.key)
+    console.log(e.key);
     if (e.key === "Enter") {
       let player = e.target.id;
 
       const correctInputState = getCorrectInputState(player);
-      setPlayerGraphicsAction(player, correctInputState);
 
       if (correctInputState.includes("FOLD")) {
         setPlayerInHand(player, false);
@@ -101,6 +101,10 @@ function Console(props) {
             correctInputSetState("");
           }
         });
+      }
+
+      if (correctInputState.includes("CHECK")) {
+        handleCheck(player);
       }
 
       if (correctInputState.includes("CALL")) {

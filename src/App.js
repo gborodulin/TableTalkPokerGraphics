@@ -89,6 +89,30 @@ function App(props) {
 
   const [inHandPlayers, setInHandPlayers] = useState(["1", "2", "3", "4", "5"]);
 
+  const [round, setRound] = useState("PreFlop");
+
+  const setNextRound = () => {
+    if (round === "PreFlop") setRound("Flop");
+    if (round === "Flop") setRound("Turn");
+    if (round === "Turn") setRound("River");
+    if (round === "River") setRound("PreFlop");
+  };
+
+  const clearInHandPlayersOnBet = (better, amount) => {
+    inHandPlayers.forEach((player) => {
+      if (player !== better) {
+        const correctGraphicsState = getCorrectGraphicsState(player);
+        const correctGraphicsSetState = getCorrectGraphicsSetState(player);
+
+        correctGraphicsSetState({
+          ...correctGraphicsState,
+          // action: `${amount - correctGraphicsState.currentPlayerBet} to Call`,
+          action: "",
+        });
+      }
+    });
+  };
+
   const getCardValue = (cardUID) => {
     return CardDictionary[cardUID];
   };
@@ -180,6 +204,7 @@ function App(props) {
       playerGraphicsSetState({
         ...playerGraphicsState,
         currentPlayerBet: amount,
+        action: `Bet $${amount}`,
       });
 
       setCurrentBet(amount);
@@ -191,10 +216,13 @@ function App(props) {
       playerGraphicsSetState({
         ...playerGraphicsState,
         currentPlayerBet: amount,
+        action: `Raise to $${amount}`,
       });
       setCurrentBet(amount);
       setPot(newPot);
     }
+
+    clearInHandPlayersOnBet(player, amount);
   };
 
   const handleCall = (player) => {
@@ -208,10 +236,18 @@ function App(props) {
     playerGraphicsSetState({
       ...playerGraphicsState,
       currentPlayerBet: newPlayerCurrentPlayerBet,
+      action: "Call",
     });
 
     const newPotSize = trueAmount + pot;
     setPot(newPotSize);
+  };
+
+  const handleCheck = (player) => {
+    const playerGraphicsState = getCorrectGraphicsState(player);
+    const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+
+    playerGraphicsSetState({ ...playerGraphicsState, action: "Check" });
   };
 
   const removePlayerFromHand = (player) => {
@@ -254,6 +290,7 @@ function App(props) {
         setPlayerInHand={setPlayerInHand}
         handleBet={handleBet}
         handleCall={handleCall}
+        handleCheck={handleCheck}
         inHandPlayers={inHandPlayers}
         removePlayerFromHand={removePlayerFromHand}
       />
