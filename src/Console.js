@@ -146,6 +146,7 @@ function Console(props) {
   return (
     <div className="console" onKeyDown={handleKeyDown}>
       <div className="playerConsoleBox">
+        <div className="playerConsoleBoxName">{player1Graphics.name}</div>
         <input
           type="text"
           id="1"
@@ -157,6 +158,7 @@ function Console(props) {
       </div>
 
       <div className="playerConsoleBox">
+        <div className="playerConsoleBoxName">{player2Graphics.name}</div>
         <input
           type="text"
           id="2"
@@ -168,6 +170,7 @@ function Console(props) {
       </div>
 
       <div className="playerConsoleBox">
+        <div className="playerConsoleBoxName">{player3Graphics.name}</div>
         <input
           type="text"
           id="3"
@@ -179,6 +182,7 @@ function Console(props) {
       </div>
 
       <div className="playerConsoleBox">
+        <div className="playerConsoleBoxName">{player4Graphics.name}</div>
         <input
           type="text"
           id="4"
@@ -190,6 +194,7 @@ function Console(props) {
       </div>
 
       <div className="playerConsoleBox">
+        <div className="playerConsoleBoxName">{player5Graphics.name}</div>
         <input
           type="text"
           id="5"

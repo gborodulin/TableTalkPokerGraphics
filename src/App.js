@@ -38,59 +38,77 @@ function App(props) {
     }
   });
 
-  const [player1Graphics, setPlayer1Graphics] = useState({
-    action: "",
-    card1: null,
-    card2: null,
-    inHand: true,
-    name: "Greg",
-    percent: null,
-    currentPlayerBet: 0,
-  });
-  const [player2Graphics, setPlayer2Graphics] = useState({
-    action: "",
-    card1: null,
-    card2: null,
-    inHand: true,
-    name: "Josh",
-    percent: null,
-    currentPlayerBet: 0,
-  });
-  const [player3Graphics, setPlayer3Graphics] = useState({
-    action: "",
-    card1: null,
-    card2: null,
-    inHand: true,
-    name: "David",
-    percent: null,
-    currentPlayerBet: 0,
-  });
-  const [player4Graphics, setPlayer4Graphics] = useState({
-    action: "",
-    card1: null,
-    card2: null,
-    inHand: true,
-    name: "Michael",
-    percent: null,
-    currentPlayerBet: 0,
-  });
-  const [player5Graphics, setPlayer5Graphics] = useState({
-    action: "",
-    card1: null,
-    card2: null,
-    inHand: true,
-    name: "Andrew",
-    percent: null,
-    currentPlayerBet: 0,
-  });
+  const [player1Graphics, setPlayer1Graphics] = useHistoryState(
+    {
+      action: "",
+      card1: null,
+      card2: null,
+      inHand: true,
+      name: "Greg",
+      percent: null,
+      currentPlayerBet: 0,
+    },
+    "player1Graphics"
+  );
+  const [player2Graphics, setPlayer2Graphics] = useHistoryState(
+    {
+      action: "",
+      card1: null,
+      card2: null,
+      inHand: true,
+      name: "Josh",
+      percent: null,
+      currentPlayerBet: 0,
+    },
+    "player2Graphics"
+  );
+  const [player3Graphics, setPlayer3Graphics] = useHistoryState(
+    {
+      action: "",
+      card1: null,
+      card2: null,
+      inHand: true,
+      name: "David",
+      percent: null,
+      currentPlayerBet: 0,
+    },
+    "player3Graphics"
+  );
+  const [player4Graphics, setPlayer4Graphics] = useHistoryState(
+    {
+      action: "",
+      card1: null,
+      card2: null,
+      inHand: true,
+      name: "Michael",
+      percent: null,
+      currentPlayerBet: 0,
+    },
+    "player4Graphics"
+  );
+  const [player5Graphics, setPlayer5Graphics] = useHistoryState(
+    {
+      action: "",
+      card1: null,
+      card2: null,
+      inHand: true,
+      name: "Andrew",
+      percent: null,
+      currentPlayerBet: 0,
+    },
+    "player5Graphics"
+  );
 
-  const [pot, setPot] = useState(0);
+  const [pot, setPot] = useHistoryState(0, "pot");
 
-  const [currentBet, setCurrentBet] = useState(0);
+  const [currentBet, setCurrentBet] = useHistoryState(0, "currentBet");
 
-  const [inHandPlayers, setInHandPlayers] = useState(["1", "2", "3", "4", "5"]);
+  const [inHandPlayers, setInHandPlayers] = useHistoryState(
+    ["1", "2", "3", "4", "5"],
+    "inHandPlayers"
+  );
 
-  const [round, setRound] = useState("PreFlop");
+  const [round, setRound] = useHistoryState("PreFlop", "round");
 
   const setNextRound = () => {
     if (round === "PreFlop") setRound("Flop");
