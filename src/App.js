@@ -3,6 +3,7 @@ import io from "socket.io-client";
 import "./App.css";
 import Player from "./Player";
 import Console from "./Console";
+import Card from "./Card";
 import CardDictionary from "./CardDictionary.js";
 import useHistoryState from "use-history-state";
 import { TexasHoldem } from "poker-odds-calc";
@@ -37,6 +38,8 @@ function App(props) {
       }
     }
   });
+
+  const [communityCards, setCommunityCards] = useState([]);
 
   const [player1Graphics, setPlayer1Graphics] = useHistoryState(
     {
@@ -282,9 +285,17 @@ function App(props) {
         {player3Graphics.inHand ? <Player graphics={player3Graphics} /> : null}
         {player4Graphics.inHand ? <Player graphics={player4Graphics} /> : null}
         {player5Graphics.inHand ? <Player graphics={player5Graphics} /> : null}
+      </div>
 
-        {/* <div className="pot">POT: {pot}</div>
-        <div className="pot">Current Highest Bet: {currentBet}</div> */}
+      <div className="pot_community">
+        <div className="pot">POT: ${pot}</div>
+        <div className="community">
+          <Card></Card>
+          <Card></Card>
+          <Card></Card>
+          <Card></Card>
+          <Card></Card>
+        </div>
       </div>
 
       <Console
