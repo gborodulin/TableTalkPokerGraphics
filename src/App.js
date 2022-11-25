@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import "./App.css";
 import Player from "./Player";
 import Console from "./Console";
 import Card from "./Card";
 import CardDictionary from "./CardDictionary.js";
-import useHistoryState from "use-history-state";
 import { TexasHoldem } from "poker-odds-calc";
 
 const antenna2Player = {
@@ -47,81 +46,66 @@ function App(props) {
   }, []);
 
   //STATE
-  const [button, setButton] = useHistoryState("5", "button");
+  const [button, setButton] = useState("5");
 
   const [communityCards, setCommunityCards] = useState([]);
 
-  const [player1Graphics, setPlayer1Graphics] = useHistoryState(
-    {
-      action: "",
-      card1: null,
-      card2: null,
-      name: "Greg",
-      percent: null,
-      currentPlayerBet: 0,
-    },
-    "player1Graphics"
-  );
-  const [player2Graphics, setPlayer2Graphics] = useHistoryState(
-    {
-      action: "",
-      card1: null,
-      card2: null,
-      name: "Josh",
-      percent: null,
-      currentPlayerBet: 0,
-    },
-    "player2Graphics"
-  );
-  const [player3Graphics, setPlayer3Graphics] = useHistoryState(
-    {
-      action: "",
-      card1: null,
-      card2: null,
-      name: "David",
-      percent: null,
-      currentPlayerBet: 0,
-    },
-    "player3Graphics"
-  );
-  const [player4Graphics, setPlayer4Graphics] = useHistoryState(
-    {
-      action: "",
-      card1: null,
-      card2: null,
-      name: "Michael",
-      percent: null,
-      currentPlayerBet: 0,
-    },
-    "player4Graphics"
-  );
-  const [player5Graphics, setPlayer5Graphics] = useHistoryState(
-    {
-      action: "",
-      card1: null,
-      card2: null,
-      name: "Andrew",
-      percent: null,
-      currentPlayerBet: 0,
-    },
-    "player5Graphics"
-  );
+  const [player1Graphics, setPlayer1Graphics] = useState({
+    action: "",
+    card1: null,
+    card2: null,
+    name: "Greg",
+    percent: null,
+    currentPlayerBet: 0,
+  });
+  const [player2Graphics, setPlayer2Graphics] = useState({
+    action: "",
+    card1: null,
+    card2: null,
+    name: "Josh",
+    percent: null,
+    currentPlayerBet: 0,
+  });
+  const [player3Graphics, setPlayer3Graphics] = useState({
+    action: "",
+    card1: null,
+    card2: null,
+    name: "David",
+    percent: null,
+    currentPlayerBet: 0,
+  });
+  const [player4Graphics, setPlayer4Graphics] = useState({
+    action: "",
+    card1: null,
+    card2: null,
+    name: "Michael",
+    percent: null,
+    currentPlayerBet: 0,
+  });
+  const [player5Graphics, setPlayer5Graphics] = useState({
+    action: "",
+    card1: null,
+    card2: null,
+    name: "Andrew",
+    percent: null,
+    currentPlayerBet: 0,
+  });
 
-  const [pot, setPot] = useHistoryState(0, "pot");
+  const player1GraphicsRef = useRef(player1Graphics);
+  const player2GraphicsRef = useRef(player2Graphics);
+  const player3GraphicsRef = useRef(player3Graphics);
+  const player4GraphicsRef = useRef(player4Graphics);
+  const player5GraphicsRef = useRef(player5Graphics);
 
-  const [currentBet, setCurrentBet] = useHistoryState(0, "currentBet");
+  const [pot, setPot] = useState(0);
 
-  const [inHandPlayers, setInHandPlayers] = useHistoryState(
-    playersAtTable,
-    "inHandPlayers"
-  );
+  const [currentBet, setCurrentBet] = useState(0);
 
-  const [round, setRound] = useHistoryState("Break", "round");
+  const [inHandPlayers, setInHandPlayers] = useState(playersAtTable);
 
-  const [graphicsFocusPlayer, setGraphicsFocusPlayer] = useHistoryState(
-    "1",
-    "graphicsFocusPlayer"
-  );
+  const [round, setRound] = useState("Break");
+
+  const [graphicsFocusPlayer, setGraphicsFocusPlayer] = useState("1");
 
   //FUNCTIONS
 
@@ -129,17 +113,29 @@ function App(props) {
     console.log("player", player);
     console.log("cardValue", cardValue);
 
-    const playerGraphicsState = getCorrectGraphicsState(player);
+    const playerGraphicsRef = getCorrectGraphicsRef(player);
     const playerGraphicsSetState = getCorrectGraphicsSetState(player);
 
-    if (playerGraphicsState.card1 === null) {
-      playerGraphicsSetState({ ...playerGraphicsState, card1: cardValue });
-    } else if (
-      playerGraphicsState.card2 === null &&
-      playerGraphicsState.card1 !== cardValue
-    ) {
-      playerGraphicsSetState({ ...playerGraphicsState, card2: cardValue });
-    } else {
+    console.log(playerGraphicsRef);
+
+    if (!playerGraphicsRef.current.card1) {
+      playerGraphicsSetState({
+        ...playerGraphicsRef.current,
+        card1: cardValue,
+      });
+      playerGraphicsRef.current = {
+        ...playerGraphicsRef.current,
+        card1: cardValue,
+      };
+    } else if (!playerGraphicsRef.current.card2) {
+      playerGraphicsSetState({
+        ...playerGraphicsRef.current,
+        card2: cardValue,
+      });
+      playerGraphicsRef.current = {
+        ...playerGraphicsRef.current,
+        card2: cardValue,
+      };
     }
   };
 
@@ -266,6 +262,14 @@ function App(props) {
     if (player === "5") return setPlayer5Graphics;
   };
 
+  const getCorrectGraphicsRef = (player) => {
+    if (player === "1") return player1GraphicsRef;
+    if (player === "2") return player2GraphicsRef;
+    if (player === "3") return player3GraphicsRef;
+    if (player === "4") return player4GraphicsRef;
+    if (player === "5") return player5GraphicsRef;
+  };
+
   const setPlayerGraphicsAction = (player, actionText) => {
     const playerGraphicsState = getCorrectGraphicsState(player);
     const playerGraphicsSetState = getCorrectGraphicsSetState(player);
@@ -274,6 +278,19 @@ function App(props) {
   };
 
   const newHand = () => {
+    setInHandPlayers(playersAtTable);
+
+    setCurrentBet(bigBlind);
+
+    setPot(smallBlind + bigBlind);
+
+    storedCards = [];
+
+    setRound("PreFlop");
+
+    setCommunityCards([]);
+
+    //this should be split up into clear cards / clear action
     playersAtTable.forEach((player) => {
       const playerGraphicsState = getCorrectGraphicsState(player);
       const playerGraphicsSetState = getCorrectGraphicsSetState(player);
@@ -286,18 +303,6 @@ function App(props) {
         currentPlayerBet: 0,
       });
     });
-
-    setCurrentBet(bigBlind);
-
-    setPot(smallBlind + bigBlind);
-
-    storedCards = [];
-
-    setInHandPlayers(playersAtTable);
-
-    setRound("PreFlop");
-
-    setCommunityCards([]);
 
     setNextButton_sb_bb_focus();
   };
@@ -440,6 +445,7 @@ function App(props) {
         forceBreak={forceBreak}
         button={button}
         moveButton={moveButton}
+        setPlayerCard={setPlayerCard}
       />
     </div>
   );

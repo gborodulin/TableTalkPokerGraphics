@@ -1,6 +1,5 @@
 import "./console.css";
 import { useState, useRef, useEffect } from "react";
-import useHistoryState from "use-history-state";
 
 function Console(props) {
   const {
@@ -23,33 +22,16 @@ function Console(props) {
     forceBreak,
     button,
     moveButton,
+    setPlayerCard,
   } = props;
 
-  const [player1ActionInput, setPlayer1ActionInput] = useHistoryState(
-    "",
-    "player1ActionInput"
-  );
-  const [player2ActionInput, setPlayer2ActionInput] = useHistoryState(
-    "",
-    "player2ActionInput"
-  );
-  const [player3ActionInput, setPlayer3ActionInput] = useHistoryState(
-    "",
-    "player3ActionInput"
-  );
-  const [player4ActionInput, setPlayer4ActionInput] = useHistoryState(
-    "",
-    "player4ActionInput"
-  );
-  const [player5ActionInput, setPlayer5ActionInput] = useHistoryState(
-    "",
-    "player5ActionInput"
-  );
+  const [player1ActionInput, setPlayer1ActionInput] = useState("");
+  const [player2ActionInput, setPlayer2ActionInput] = useState("");
+  const [player3ActionInput, setPlayer3ActionInput] = useState("");
+  const [player4ActionInput, setPlayer4ActionInput] = useState("");
+  const [player5ActionInput, setPlayer5ActionInput] = useState("");
 
-  const [consoleFocusPlayer, setConsoleFocusPlayer] = useHistoryState(
-    "1",
-    "consoleFocusPlayer"
-  );
+  const [consoleFocusPlayer, setConsoleFocusPlayer] = useState("1");
 
   const player1 = useRef(null);
   const player2 = useRef(null);
@@ -195,6 +177,7 @@ function Console(props) {
     } else if (key === "z") {
       correctInputSetState("CHECK");
       handleCheck(player);
+      // setPlayerCard(player, "Ad");
     } else if (key === "c") {
       correctInputSetState("CALL");
       handleCall(player);
