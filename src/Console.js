@@ -5,7 +5,6 @@ import useHistoryState from "use-history-state";
 function Console(props) {
   const {
     setPlayerGraphicsAction,
-    setPlayerInHand,
     newHand,
     player1Graphics,
     player2Graphics,
@@ -17,6 +16,13 @@ function Console(props) {
     inHandPlayers,
     removePlayerFromHand,
     handleCheck,
+    handleFold,
+    round,
+    setNextRound,
+    graphicsFocusPlayer,
+    forceBreak,
+    button,
+    moveButton,
   } = props;
 
   const [player1ActionInput, setPlayer1ActionInput] = useHistoryState(
@@ -40,7 +46,10 @@ function Console(props) {
     "player5ActionInput"
   );
 
-  const [focusPlayer, setFocusPlayer] = useHistoryState(1, "focusPlayer");
+  const [consoleFocusPlayer, setConsoleFocusPlayer] = useHistoryState(
+    "1",
+    "consoleFocusPlayer"
+  );
 
   const player1 = useRef(null);
   const player2 = useRef(null);
@@ -49,12 +58,34 @@ function Console(props) {
   const player5 = useRef(null);
 
   useEffect(() => {
-    if (focusPlayer === 1) player1.current.focus();
-    if (focusPlayer === 2) player2.current.focus();
-    if (focusPlayer === 3) player3.current.focus();
-    if (focusPlayer === 4) player4.current.focus();
-    if (focusPlayer === 5) player5.current.focus();
-  }, [focusPlayer]);
+    if (consoleFocusPlayer === "1") player1.current.focus();
+    else if (consoleFocusPlayer === "2") player2.current.focus();
+    else if (consoleFocusPlayer === "3") player3.current.focus();
+    else if (consoleFocusPlayer === "4") player4.current.focus();
+    else if (consoleFocusPlayer === "5") player5.current.focus();
+  }, [consoleFocusPlayer]);
+
+  useEffect(() => {
+    if (round === "Break") {
+      clearAllInputStates();
+    } else if (round === "PreFlop") {
+      clearAllInputStates();
+    } else if (round === "Flop") {
+      clearAllInHandInputStates();
+    } else if (round === "Turn") {
+      clearAllInHandInputStates();
+    } else if (round === "River") {
+      clearAllInHandInputStates();
+    }
+  }, [round]);
+
+  useEffect(() => {
+    if (graphicsFocusPlayer === "1") player1.current.focus();
+    else if (graphicsFocusPlayer === "2") player2.current.focus();
+    else if (graphicsFocusPlayer === "3") player3.current.focus();
+    else if (graphicsFocusPlayer === "4") player4.current.focus();
+    else if (graphicsFocusPlayer === "5") player5.current.focus();
+  }, [graphicsFocusPlayer]);
 
   const getCorrectInputSetState = (player) => {
     if (player === "1") return setPlayer1ActionInput;
@@ -72,39 +103,78 @@ function Console(props) {
     if (player === "5") return player5ActionInput;
   };
 
+  const clearAllInputStates = () => {
+    setPlayer1ActionInput("");
+    setPlayer2ActionInput("");
+    setPlayer3ActionInput("");
+    setPlayer4ActionInput("");
+    setPlayer5ActionInput("");
+  };
+
+  const clearAllInHandInputStates = () => {
+    inHandPlayers.forEach((player) => {
+      const correctInputSetState = getCorrectInputSetState(player);
+
+      correctInputSetState("");
+    });
+  };
+
+  const setNextConsoleFocusPlayer = (curPlayer) => {
+    var i = inHandPlayers.indexOf(curPlayer);
+    var len = inHandPlayers.length;
+
+    var current = inHandPlayers[i];
+    var previous = inHandPlayers[(i + len - 1) % len];
+    var next = inHandPlayers[(i + 1) % len];
+
+    setConsoleFocusPlayer(next);
+  };
+
+  const setPreviousConsoleFocusPlayer = (curPlayer) => {
+    var i = inHandPlayers.indexOf(curPlayer);
+    var len = inHandPlayers.length;
+
+    var current = inHandPlayers[i];
+    var previous = inHandPlayers[(i + len - 1) % len];
+    var next = inHandPlayers[(i + 1) % len];
+
+    setConsoleFocusPlayer(previous);
+  };
+
   const handleChange = (e) => {
     let player = e.target.id;
     let key = e.nativeEvent.data;
+    // console.log(key);
 
     const correctInputSetState = getCorrectInputSetState(player);
 
-    if (key === "f") {
-      correctInputSetState("FOLD");
-    } else if (key === "c") correctInputSetState("CALL");
-    else if (key === "z") correctInputSetState("CHECK");
-    else if (key === "b") correctInputSetState("BET ");
-    else if (key === "q") {
-      setPlayer1ActionInput("");
-      setPlayer2ActionInput("");
-      setPlayer3ActionInput("");
-      setPlayer4ActionInput("");
-      setPlayer5ActionInput("");
-
-      newHand();
-    } else correctInputSetState(e.target.value);
+    if (
+      key === "1" ||
+      key === "2" ||
+      key === "3" ||
+      key === "4" ||
+      key === "5" ||
+      key === "6" ||
+      key === "7" ||
+      key === "8" ||
+      key === "9" ||
+      key === "0" ||
+      key === "." ||
+      key === null
+    ) {
+      correctInputSetState(e.target.value);
+    }
   };
 
   const handleKeyDown = (e) => {
-    console.log(e.key);
-    if (e.key === "Enter") {
-      let player = e.target.id;
+    const player = e.target.id;
+    const key = e.key;
+    // console.log(e.key);
 
+    const correctInputSetState = getCorrectInputSetState(player);
+
+    if (key === "Enter") {
       const correctInputState = getCorrectInputState(player);
-
-      if (correctInputState.includes("FOLD")) {
-        setPlayerInHand(player, false);
-        removePlayerFromHand(player);
-      }
 
       if (correctInputState.includes("BET")) {
         let amountString = correctInputState.split(" ")[1];
@@ -119,34 +189,46 @@ function Console(props) {
         });
       }
 
-      if (correctInputState.includes("CHECK")) {
-        handleCheck(player);
-      }
-
-      if (correctInputState.includes("CALL")) {
-        handleCall(player);
-      }
-
-      if (focusPlayer === 5) setFocusPlayer(1);
-      else setFocusPlayer(focusPlayer + 1);
-      // console.log(focusPlayer)
+      // if (consoleFocusPlayer === 5) setConsoleFocusPlayer(1);
+      // else setConsoleFocusPlayer(consoleFocusPlayer + 1);
+      // // console.log(consoleFocusPlayer)
+    } else if (key === "z") {
+      correctInputSetState("CHECK");
+      handleCheck(player);
+    } else if (key === "c") {
+      correctInputSetState("CALL");
+      handleCall(player);
+    } else if (key === "b") {
+      correctInputSetState("BET ");
+    } else if (key === "f") {
+      correctInputSetState("FOLD");
+      handleFold(player);
+    } else if (key === "q") {
+      clearAllInputStates();
+      newHand();
+    } else if (key === "w") {
+      forceBreak();
+    } else if (key === "e") {
+      moveButton();
     }
 
-    if (e.key === "ArrowUp") {
-      if (focusPlayer === 1) setFocusPlayer(5);
-      else setFocusPlayer(focusPlayer - 1);
-    }
-
-    if (e.key === "ArrowDown") {
-      if (focusPlayer === 5) setFocusPlayer(1);
-      else setFocusPlayer(focusPlayer + 1);
+    ///////////
+    else if (key === "ArrowUp") {
+      setPreviousConsoleFocusPlayer(player);
+    } else if (key === "ArrowDown") {
+      setNextConsoleFocusPlayer(player);
+    } else if (key === "ArrowRight") {
+      setNextRound();
     }
   };
 
   return (
     <div className="console" onKeyDown={handleKeyDown}>
+      <div className="round">{round}</div>
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player1Graphics.name}</div>
+        <div className="playerConsoleBoxName">
+          {player1Graphics.name} {button === "1" ? "-B" : null}
+        </div>
         <input
           type="text"
           id="1"
@@ -158,7 +240,9 @@ function Console(props) {
       </div>
 
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player2Graphics.name}</div>
+        <div className="playerConsoleBoxName">
+          {player2Graphics.name} {button === "2" ? "-B" : null}
+        </div>
         <input
           type="text"
           id="2"
@@ -170,7 +254,9 @@ function Console(props) {
       </div>
 
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player3Graphics.name}</div>
+        <div className="playerConsoleBoxName">
+          {player3Graphics.name} {button === "3" ? "-B" : null}
+        </div>
         <input
           type="text"
           id="3"
@@ -182,7 +268,9 @@ function Console(props) {
       </div>
 
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player4Graphics.name}</div>
+        <div className="playerConsoleBoxName">
+          {player4Graphics.name} {button === "4" ? "-B" : null}
+        </div>
         <input
           type="text"
           id="4"
@@ -194,7 +282,9 @@ function Console(props) {
       </div>
 
       <div className="playerConsoleBox">
-        <div className="playerConsoleBoxName">{player5Graphics.name}</div>
+        <div className="playerConsoleBoxName">
+          {player5Graphics.name} {button === "5" ? "-B" : null}
+        </div>
         <input
           type="text"
           id="5"

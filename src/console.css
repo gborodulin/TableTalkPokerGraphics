@@ -4,17 +4,25 @@
   grid-row: 1;
   display: grid;
   grid-template-columns: 100%;
-  grid-template-rows: 20% 20% 20% 20% 20%;
+  grid-template-rows: 5% 15% 15% 15% 15% 15%;
 }
 
 input {
+  width: 100%;
   border-width: 3px;
   font-size: 40px;
+}
+
+.round {
+  font-size: 40px;
+  justify-self: center;
 }
 
 .playerConsoleBox {
   margin: 16px;
   padding: 12px;
+  width: 75%;
+  justify-self: flex-end;
 }
 
 .controlKeys {

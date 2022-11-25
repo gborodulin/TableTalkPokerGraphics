@@ -31,7 +31,7 @@ function Card(props) {
     }
   }
 
-  console.log(rank, suit);
+  // console.log(rank, suit);
   return (
     <div className="card">
       <div className="rank" style={{ color: textcolor }}>

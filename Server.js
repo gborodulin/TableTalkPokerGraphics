@@ -36,7 +36,12 @@ const serialport = new SerialPort.SerialPort({
 const parser = new Readline.ReadlineParser();
 serialport.pipe(parser);
 
+//-------
+
 parser.on("data", (data) => {
+  // const cardUID = data.split("UID: ")[1].split(",")[0];
+  // console.log(cardUID);
+
   console.log(data);
   io.emit("serialdata", { data });
 });

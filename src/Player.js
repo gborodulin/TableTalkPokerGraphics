@@ -3,8 +3,6 @@ import "./player.css";
 import { genRandomCard } from "./utils";
 
 function Player(props) {
-  // let { rank, suit } = genRandomCard();
-
   const { graphics } = props;
 
   return (

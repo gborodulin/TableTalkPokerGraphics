@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import "./App.css";
 import Player from "./Player";
@@ -8,36 +8,46 @@ import CardDictionary from "./CardDictionary.js";
 import useHistoryState from "use-history-state";
 import { TexasHoldem } from "poker-odds-calc";
 
+const antenna2Player = {
+  1: "1",
+  2: "2",
+  3: "3",
+  4: "4",
+  5: "5",
+  6: "6",
+  7: "7",
+  8: "8",
+};
+let storedCards = [];
+const playersAtTable = ["1", "2", "3", "4", "5"];
+const smallBlind = 1;
+const bigBlind = 2;
+
 function App(props) {
+  //SOCKET
   let socket = io("http://localhost:8888", { transports: ["websocket"] });
 
-  let storedCards = [];
+  useEffect(() => {
+    socket.off("serialdata").on("serialdata", (serialdata) => {
+      const antenna = serialdata.data.split("antenna: ")[1][0];
+      const cardUID = serialdata.data.split("UID: ")[1].split(",")[0];
 
-  socket.on("serialdata", (serialdata) => {
-    const player = serialdata.data.split("antenna: ")[1][0];
-    const cardUID = serialdata.data.split("UID: ")[1].split(",")[0];
-    // console.log("player: ", player);
-    // console.log("cardUID: ", cardUID);
-    const cardValue = getCardValue(cardUID);
-    console.log(cardValue);
+      if (!storedCards.includes(cardUID)) {
+        storedCards.push(cardUID);
 
-    if (!storedCards.includes(cardValue)) {
-      storedCards.push(cardValue);
-      console.log("Value added: ", cardValue, storedCards);
+        const player = antenna2Player[antenna];
+        const cardValue = getCardValue(cardUID);
 
-      const playerGraphicsState = getCorrectGraphicsState(player);
-      const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+        // console.log("player", player);
+        // console.log("cardValue", cardValue);
 
-      if (!playerGraphicsState.card1) {
-        playerGraphicsSetState({ ...playerGraphicsState, card1: cardValue });
-      } else if (
-        !playerGraphicsState.card2 &&
-        playerGraphicsState.card1 !== cardValue
-      ) {
-        playerGraphicsSetState({ ...playerGraphicsState, card2: cardValue });
+        setPlayerCard(player, cardValue);
       }
-    }
-  });
+    });
+  }, []);
+
+  //STATE
+  const [button, setButton] = useHistoryState("5", "button");
 
   const [communityCards, setCommunityCards] = useState([]);
 
@@ -46,7 +56,6 @@ function App(props) {
       action: "",
       card1: null,
       card2: null,
-      inHand: true,
       name: "Greg",
       percent: null,
       currentPlayerBet: 0,
@@ -58,7 +67,6 @@ function App(props) {
       action: "",
       card1: null,
       card2: null,
-      inHand: true,
       name: "Josh",
       percent: null,
       currentPlayerBet: 0,
@@ -70,7 +78,6 @@ function App(props) {
       action: "",
       card1: null,
       card2: null,
-      inHand: true,
       name: "David",
       percent: null,
       currentPlayerBet: 0,
@@ -82,7 +89,6 @@ function App(props) {
       action: "",
       card1: null,
       card2: null,
-      inHand: true,
       name: "Michael",
       percent: null,
       currentPlayerBet: 0,
@@ -94,7 +100,6 @@ function App(props) {
       action: "",
       card1: null,
       card2: null,
-      inHand: true,
       name: "Andrew",
       percent: null,
       currentPlayerBet: 0,
@@ -107,17 +112,110 @@ function App(props) {
   const [currentBet, setCurrentBet] = useHistoryState(0, "currentBet");
 
   const [inHandPlayers, setInHandPlayers] = useHistoryState(
-    ["1", "2", "3", "4", "5"],
+    playersAtTable,
     "inHandPlayers"
   );
 
-  const [round, setRound] = useHistoryState("PreFlop", "round");
+  const [round, setRound] = useHistoryState("Break", "round");
+
+  const [graphicsFocusPlayer, setGraphicsFocusPlayer] = useHistoryState(
+    "1",
+    "graphicsFocusPlayer"
+  );
+
+  //FUNCTIONS
+
+  const setPlayerCard = (player, cardValue) => {
+    console.log("player", player);
+    console.log("cardValue", cardValue);
+
+    const playerGraphicsState = getCorrectGraphicsState(player);
+    const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+
+    if (playerGraphicsState.card1 === null) {
+      playerGraphicsSetState({ ...playerGraphicsState, card1: cardValue });
+    } else if (
+      playerGraphicsState.card2 === null &&
+      playerGraphicsState.card1 !== cardValue
+    ) {
+      playerGraphicsSetState({ ...playerGraphicsState, card2: cardValue });
+    } else {
+    }
+  };
 
   const setNextRound = () => {
-    if (round === "PreFlop") setRound("Flop");
-    if (round === "Flop") setRound("Turn");
-    if (round === "Turn") setRound("River");
-    if (round === "River") setRound("PreFlop");
+    if (round === "Break") {
+      //sets to pre-flop in newHand
+      newHand();
+    } else if (round === "PreFlop") {
+      setRound("Flop");
+      clearInHandPlayersOnRound();
+      setCurrentBet(0);
+    } else if (round === "Flop") {
+      setRound("Turn");
+      clearInHandPlayersOnRound();
+      setCurrentBet(0);
+    } else if (round === "Turn") {
+      setRound("River");
+      clearInHandPlayersOnRound();
+      setCurrentBet(0);
+    } else if (round === "River") {
+      setRound("Break");
+      clearInHandPlayersOnRound();
+      setCurrentBet(0);
+    }
+  };
+
+  const setNextGraphicsFocusPlayer = () => {
+    var i = inHandPlayers.indexOf(graphicsFocusPlayer);
+    var len = inHandPlayers.length;
+
+    var current = inHandPlayers[i];
+    var previous = inHandPlayers[(i + len - 1) % len];
+    var next = inHandPlayers[(i + 1) % len];
+
+    setGraphicsFocusPlayer(next);
+  };
+
+  const setPreviousGraphicsFocusPlayer = () => {
+    var i = inHandPlayers.indexOf(graphicsFocusPlayer);
+    var len = inHandPlayers.length;
+
+    var current = inHandPlayers[i];
+    var previous = inHandPlayers[(i + len - 1) % len];
+    var next = inHandPlayers[(i + 1) % len];
+
+    setGraphicsFocusPlayer(previous);
+  };
+
+  const setNextButton_sb_bb_focus = () => {
+    var i = playersAtTable.indexOf(button);
+    var len = playersAtTable.length;
+
+    var newButton = playersAtTable[(i + 1) % len];
+    var smallBlindPlayer = playersAtTable[(i + 2) % len];
+    var bigBlindPlayer = playersAtTable[(i + 3) % len];
+    var focusPlayer = playersAtTable[(i + 4) % len];
+
+    setButton(newButton);
+    setGraphicsFocusPlayer(focusPlayer);
+
+    const smallBlindPlayerState = getCorrectGraphicsState(smallBlindPlayer);
+    const smallBlindPlayerSetState =
+      getCorrectGraphicsSetState(smallBlindPlayer);
+
+    smallBlindPlayerSetState({
+      ...smallBlindPlayerState,
+      action: `$${smallBlind}`,
+    });
+
+    const bigBlindPlayerState = getCorrectGraphicsState(bigBlindPlayer);
+    const bigBlindPlayerSetState = getCorrectGraphicsSetState(bigBlindPlayer);
+
+    bigBlindPlayerSetState({
+      ...bigBlindPlayerState,
+      action: `$${bigBlind}`,
+    });
   };
 
   const clearInHandPlayersOnBet = (better, amount) => {
@@ -132,6 +230,19 @@ function App(props) {
           action: "",
         });
       }
+    });
+  };
+
+  const clearInHandPlayersOnRound = () => {
+    inHandPlayers.forEach((player) => {
+      const correctGraphicsState = getCorrectGraphicsState(player);
+      const correctGraphicsSetState = getCorrectGraphicsSetState(player);
+
+      correctGraphicsSetState({
+        ...correctGraphicsState,
+        // action: `${amount - correctGraphicsState.currentPlayerBet} to Call`,
+        action: "",
+      });
     });
   };
 
@@ -162,60 +273,48 @@ function App(props) {
     playerGraphicsSetState({ ...playerGraphicsState, action: actionText });
   };
 
-  const setPlayerInHand = (player, inHand) => {
-    const playerGraphicsState = getCorrectGraphicsState(player);
-    const playerGraphicsSetState = getCorrectGraphicsSetState(player);
-
-    playerGraphicsSetState({ ...playerGraphicsState, inHand: inHand });
-  };
-
   const newHand = () => {
-    setPlayer1Graphics({
-      ...player1Graphics,
-      action: "",
-      card1: null,
-      card2: null,
-      inHand: true,
-      currentPlayerBet: 0,
-    });
-    setPlayer2Graphics({
-      ...player2Graphics,
-      action: "",
-      card1: null,
-      card2: null,
-      inHand: true,
-      currentPlayerBet: 0,
-    });
-    setPlayer3Graphics({
-      ...player3Graphics,
-      action: "",
-      card1: null,
-      card2: null,
-      inHand: true,
-      currentPlayerBet: 0,
-    });
-    setPlayer4Graphics({
-      ...player4Graphics,
-      action: "",
-      card1: null,
-      card2: null,
-      inHand: true,
-      currentPlayerBet: 0,
-    });
-    setPlayer5Graphics({
-      ...player5Graphics,
-      action: "",
-      card1: null,
-      card2: null,
-      inHand: true,
-      currentPlayerBet: 0,
+    playersAtTable.forEach((player) => {
+      const playerGraphicsState = getCorrectGraphicsState(player);
+      const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+
+      playerGraphicsSetState({
+        ...playerGraphicsState,
+        action: "",
+        card1: null,
+        card2: null,
+        currentPlayerBet: 0,
+      });
     });
 
-    setCurrentBet(0);
+    setCurrentBet(bigBlind);
 
-    setPot(0);
+    setPot(smallBlind + bigBlind);
 
     storedCards = [];
+
+    setInHandPlayers(playersAtTable);
+
+    setRound("PreFlop");
+
+    setCommunityCards([]);
+
+    setNextButton_sb_bb_focus();
+  };
+
+  const forceBreak = () => {
+    setRound("Break");
+  };
+
+  const moveButton = () => {
+    var i = playersAtTable.indexOf(button);
+    var len = playersAtTable.length;
+
+    var current = playersAtTable[i];
+    var previous = playersAtTable[(i + len - 1) % len];
+    var next = playersAtTable[(i + 1) % len];
+
+    setButton(next);
   };
 
   const handleBet = (player, amount) => {
@@ -245,6 +344,7 @@ function App(props) {
     }
 
     clearInHandPlayersOnBet(player, amount);
+    setNextGraphicsFocusPlayer();
   };
 
   const handleCall = (player) => {
@@ -263,6 +363,8 @@ function App(props) {
 
     const newPotSize = trueAmount + pot;
     setPot(newPotSize);
+
+    setNextGraphicsFocusPlayer();
   };
 
   const handleCheck = (player) => {
@@ -270,6 +372,12 @@ function App(props) {
     const playerGraphicsSetState = getCorrectGraphicsSetState(player);
 
     playerGraphicsSetState({ ...playerGraphicsState, action: "Check" });
+    setNextGraphicsFocusPlayer();
+  };
+
+  const handleFold = (player) => {
+    removePlayerFromHand(player);
+    setNextGraphicsFocusPlayer();
   };
 
   const removePlayerFromHand = (player) => {
@@ -279,24 +387,38 @@ function App(props) {
 
   return (
     <div className="App">
-      <div className="playerGraphics">
-        {player1Graphics.inHand ? <Player graphics={player1Graphics} /> : null}
-        {player2Graphics.inHand ? <Player graphics={player2Graphics} /> : null}
-        {player3Graphics.inHand ? <Player graphics={player3Graphics} /> : null}
-        {player4Graphics.inHand ? <Player graphics={player4Graphics} /> : null}
-        {player5Graphics.inHand ? <Player graphics={player5Graphics} /> : null}
-      </div>
-
-      <div className="pot_community">
-        <div className="pot">POT: ${pot}</div>
-        <div className="community">
-          <Card></Card>
-          <Card></Card>
-          <Card></Card>
-          <Card></Card>
-          <Card></Card>
+      {round !== "Break" ? (
+        <div className="playerGraphics">
+          {inHandPlayers.includes("1") ? (
+            <Player graphics={player1Graphics} />
+          ) : null}
+          {inHandPlayers.includes("2") ? (
+            <Player graphics={player2Graphics} />
+          ) : null}
+          {inHandPlayers.includes("3") ? (
+            <Player graphics={player3Graphics} />
+          ) : null}
+          {inHandPlayers.includes("4") ? (
+            <Player graphics={player4Graphics} />
+          ) : null}
+          {inHandPlayers.includes("5") ? (
+            <Player graphics={player5Graphics} />
+          ) : null}
         </div>
-      </div>
+      ) : null}
+
+      {round !== "Break" ? (
+        <div className="pot_community">
+          <div className="pot">POT: ${pot}</div>
+          <div className="community">
+            <Card></Card>
+            <Card></Card>
+            <Card></Card>
+            <Card></Card>
+            <Card></Card>
+          </div>
+        </div>
+      ) : null}
 
       <Console
         player1Graphics={player1Graphics}
@@ -306,12 +428,18 @@ function App(props) {
         player5Graphics={player5Graphics}
         newHand={newHand}
         setPlayerGraphicsAction={setPlayerGraphicsAction}
-        setPlayerInHand={setPlayerInHand}
         handleBet={handleBet}
         handleCall={handleCall}
         handleCheck={handleCheck}
+        handleFold={handleFold}
         inHandPlayers={inHandPlayers}
         removePlayerFromHand={removePlayerFromHand}
+        round={round}
+        setNextRound={setNextRound}
+        graphicsFocusPlayer={graphicsFocusPlayer}
+        forceBreak={forceBreak}
+        button={button}
+        moveButton={moveButton}
       />
     </div>
   );
