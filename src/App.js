@@ -39,8 +39,17 @@ function App(props) {
 
         // console.log("player", player);
         // console.log("cardValue", cardValue);
-
-        setPlayerCard(player, cardValue);
+        if (
+          player === "1" ||
+          player === "2" ||
+          player === "3" ||
+          player === "4" ||
+          player === "5"
+        ) {
+          addPlayerCardGraphics(player, cardValue);
+        } else if (player === "6" || player === "7" || player === "8") {
+          addCommunityCardsGraphics(cardValue);
+        }
       }
     });
   }, []);
@@ -48,9 +57,15 @@ function App(props) {
   //STATE
   const [button, setButton] = useState("5");
 
-  const [communityCards, setCommunityCards] = useState([]);
+  const [communityCards, _setCommunityCards] = useState([]);
+  const communityCardsRef = useRef(communityCards);
 
-  const [player1Graphics, setPlayer1Graphics] = useState({
+  const setCommunityCards = (data) => {
+    _setCommunityCards(data);
+    communityCardsRef.current = data;
+  };
+
+  const [player1Graphics, _setPlayer1Graphics] = useState({
     action: "",
     card1: null,
     card2: null,
@@ -58,7 +73,13 @@ function App(props) {
     percent: null,
     currentPlayerBet: 0,
   });
-  const [player2Graphics, setPlayer2Graphics] = useState({
+  const player1GraphicsRef = useRef(player1Graphics);
+  const setPlayer1Graphics = (data) => {
+    _setPlayer1Graphics(data);
+    player1GraphicsRef.current = data;
+  };
+
+  const [player2Graphics, _setPlayer2Graphics] = useState({
     action: "",
     card1: null,
     card2: null,
@@ -66,7 +87,13 @@ function App(props) {
     percent: null,
     currentPlayerBet: 0,
   });
-  const [player3Graphics, setPlayer3Graphics] = useState({
+  const player2GraphicsRef = useRef(player2Graphics);
+  const setPlayer2Graphics = (data) => {
+    _setPlayer2Graphics(data);
+    player2GraphicsRef.current = data;
+  };
+
+  const [player3Graphics, _setPlayer3Graphics] = useState({
     action: "",
     card1: null,
     card2: null,
@@ -74,7 +101,13 @@ function App(props) {
     percent: null,
     currentPlayerBet: 0,
   });
-  const [player4Graphics, setPlayer4Graphics] = useState({
+  const player3GraphicsRef = useRef(player3Graphics);
+  const setPlayer3Graphics = (data) => {
+    _setPlayer3Graphics(data);
+    player3GraphicsRef.current = data;
+  };
+
+  const [player4Graphics, _setPlayer4Graphics] = useState({
     action: "",
     card1: null,
     card2: null,
@@ -82,7 +115,13 @@ function App(props) {
     percent: null,
     currentPlayerBet: 0,
   });
-  const [player5Graphics, setPlayer5Graphics] = useState({
+  const player4GraphicsRef = useRef(player4Graphics);
+  const setPlayer4Graphics = (data) => {
+    _setPlayer4Graphics(data);
+    player4GraphicsRef.current = data;
+  };
+
+  const [player5Graphics, _setPlayer5Graphics] = useState({
     action: "",
     card1: null,
     card2: null,
@@ -90,12 +129,11 @@ function App(props) {
     percent: null,
     currentPlayerBet: 0,
   });
-
-  const player1GraphicsRef = useRef(player1Graphics);
-  const player2GraphicsRef = useRef(player2Graphics);
-  const player3GraphicsRef = useRef(player3Graphics);
-  const player4GraphicsRef = useRef(player4Graphics);
   const player5GraphicsRef = useRef(player5Graphics);
+  const setPlayer5Graphics = (data) => {
+    _setPlayer5Graphics(data);
+    player5GraphicsRef.current = data;
+  };
 
   const [pot, setPot] = useState(0);
 
@@ -109,33 +147,31 @@ function App(props) {
 
   //FUNCTIONS
 
-  const setPlayerCard = (player, cardValue) => {
+  const addPlayerCardGraphics = (player, cardValue) => {
     console.log("player", player);
     console.log("cardValue", cardValue);
 
     const playerGraphicsRef = getCorrectGraphicsRef(player);
     const playerGraphicsSetState = getCorrectGraphicsSetState(player);
 
-    console.log(playerGraphicsRef);
+    // console.log(playerGraphicsRef);
 
     if (!playerGraphicsRef.current.card1) {
       playerGraphicsSetState({
         ...playerGraphicsRef.current,
         card1: cardValue,
       });
-      playerGraphicsRef.current = {
-        ...playerGraphicsRef.current,
-        card1: cardValue,
-      };
     } else if (!playerGraphicsRef.current.card2) {
       playerGraphicsSetState({
         ...playerGraphicsRef.current,
         card2: cardValue,
       });
-      playerGraphicsRef.current = {
-        ...playerGraphicsRef.current,
-        card2: cardValue,
-      };
+    }
+  };
+
+  const addCommunityCardsGraphics = (cardValue) => {
+    if (communityCardsRef.current.length <= 5) {
+      setCommunityCards([...communityCardsRef.current, cardValue]);
     }
   };
 
@@ -252,6 +288,8 @@ function App(props) {
     if (player === "3") return player3Graphics;
     if (player === "4") return player4Graphics;
     if (player === "5") return player5Graphics;
+    if (player === "6" || player === "7" || player === "8")
+      return communityCards;
   };
 
   const getCorrectGraphicsSetState = (player) => {
@@ -260,6 +298,8 @@ function App(props) {
     if (player === "3") return setPlayer3Graphics;
     if (player === "4") return setPlayer4Graphics;
     if (player === "5") return setPlayer5Graphics;
+    if (player === "6" || player === "7" || player === "8")
+      return setCommunityCards;
   };
 
   const getCorrectGraphicsRef = (player) => {
@@ -268,6 +308,8 @@ function App(props) {
     if (player === "3") return player3GraphicsRef;
     if (player === "4") return player4GraphicsRef;
     if (player === "5") return player5GraphicsRef;
+    if (player === "6" || player === "7" || player === "8")
+      return communityCardsRef;
   };
 
   const setPlayerGraphicsAction = (player, actionText) => {
@@ -416,11 +458,9 @@ function App(props) {
         <div className="pot_community">
           <div className="pot">POT: ${pot}</div>
           <div className="community">
-            <Card></Card>
-            <Card></Card>
-            <Card></Card>
-            <Card></Card>
-            <Card></Card>
+            {communityCards.map((cardValue) => (
+              <Card cardValue={cardValue} />
+            ))}
           </div>
         </div>
       ) : null}
@@ -445,7 +485,7 @@ function App(props) {
         forceBreak={forceBreak}
         button={button}
         moveButton={moveButton}
-        setPlayerCard={setPlayerCard}
+        addPlayerCardGraphics={addPlayerCardGraphics}
       />
     </div>
   );
