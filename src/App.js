@@ -139,11 +139,12 @@ function App(props) {
 
   const [currentBet, setCurrentBet] = useState(0);
 
-  const [inHandPlayers, setInHandPlayers] = useState(playersAtTable);
-
   const [round, setRound] = useState("Break");
 
   const [graphicsFocusPlayer, setGraphicsFocusPlayer] = useState("1");
+  const [inHandPlayers, setInHandPlayers] = useState(playersAtTable);
+
+  const [allInPlayers, setAllInPlayers] = useState([]);
 
   //FUNCTIONS
 
@@ -193,8 +194,10 @@ function App(props) {
       setCurrentBet(0);
     } else if (round === "River") {
       setRound("Break");
+
       clearInHandPlayersOnRound();
       setCurrentBet(0);
+      clearAllLoadedCards();
     }
   };
 
@@ -247,6 +250,19 @@ function App(props) {
     bigBlindPlayerSetState({
       ...bigBlindPlayerState,
       action: `$${bigBlind}`,
+    });
+
+    playersAtTable.forEach((player) => {
+      if (player !== bigBlindPlayer && player !== smallBlindPlayer) {
+        const playerGraphicsState = getCorrectGraphicsState(player);
+        const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+
+        playerGraphicsSetState({
+          ...playerGraphicsState,
+
+          action: "",
+        });
+      }
     });
   };
 
@@ -322,17 +338,38 @@ function App(props) {
   const newHand = () => {
     setInHandPlayers(playersAtTable);
 
+    setAllInPlayers([]);
+
     setCurrentBet(bigBlind);
 
     setPot(smallBlind + bigBlind);
 
-    storedCards = [];
-
     setRound("PreFlop");
 
-    setCommunityCards([]);
+    clearAllPlayerCurrentBet();
 
-    //this should be split up into clear cards / clear action
+    clearAllPlayerActions();
+
+    setNextButton_sb_bb_focus();
+  };
+
+  const clearAllLoadedCards = () => {
+    playersAtTable.forEach((player) => {
+      const playerGraphicsState = getCorrectGraphicsState(player);
+      const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+
+      playerGraphicsSetState({
+        ...playerGraphicsState,
+        card1: null,
+        card2: null,
+      });
+    });
+
+    setCommunityCards([]);
+    storedCards = [];
+  };
+
+  const clearAllPlayerActions = () => {
     playersAtTable.forEach((player) => {
       const playerGraphicsState = getCorrectGraphicsState(player);
       const playerGraphicsSetState = getCorrectGraphicsSetState(player);
@@ -340,17 +377,25 @@ function App(props) {
       playerGraphicsSetState({
         ...playerGraphicsState,
         action: "",
-        card1: null,
-        card2: null,
+      });
+    });
+  };
+
+  const clearAllPlayerCurrentBet = () => {
+    playersAtTable.forEach((player) => {
+      const playerGraphicsState = getCorrectGraphicsState(player);
+      const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+
+      playerGraphicsSetState({
+        ...playerGraphicsState,
         currentPlayerBet: 0,
       });
     });
-
-    setNextButton_sb_bb_focus();
   };
 
   const forceBreak = () => {
     setRound("Break");
+    clearAllLoadedCards();
   };
 
   const moveButton = () => {
@@ -427,6 +472,20 @@ function App(props) {
     setNextGraphicsFocusPlayer();
   };
 
+  const handleAllIn = (player) => {
+    const playerGraphicsState = getCorrectGraphicsState(player);
+    const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+
+    playerGraphicsSetState({
+      ...playerGraphicsState,
+      action: "All-In",
+    });
+
+    removePlayerFromHand(player);
+    setNextGraphicsFocusPlayer();
+    setAllInPlayers([...allInPlayers, player]);
+  };
+
   const removePlayerFromHand = (player) => {
     const newArray = inHandPlayers.filter((item) => item !== player);
     setInHandPlayers(newArray);
@@ -436,19 +495,19 @@ function App(props) {
     <div className="App">
       {round !== "Break" ? (
         <div className="playerGraphics">
-          {inHandPlayers.includes("1") ? (
+          {inHandPlayers.includes("1") || allInPlayers.includes("1") ? (
             <Player graphics={player1Graphics} />
           ) : null}
-          {inHandPlayers.includes("2") ? (
+          {inHandPlayers.includes("2") || allInPlayers.includes("2") ? (
             <Player graphics={player2Graphics} />
           ) : null}
-          {inHandPlayers.includes("3") ? (
+          {inHandPlayers.includes("3") || allInPlayers.includes("3") ? (
             <Player graphics={player3Graphics} />
           ) : null}
-          {inHandPlayers.includes("4") ? (
+          {inHandPlayers.includes("4") || allInPlayers.includes("4") ? (
             <Player graphics={player4Graphics} />
           ) : null}
-          {inHandPlayers.includes("5") ? (
+          {inHandPlayers.includes("5") || allInPlayers.includes("5") ? (
             <Player graphics={player5Graphics} />
           ) : null}
         </div>
@@ -486,6 +545,8 @@ function App(props) {
         button={button}
         moveButton={moveButton}
         addPlayerCardGraphics={addPlayerCardGraphics}
+        clearAllLoadedCards={clearAllLoadedCards}
+        handleAllIn={handleAllIn}
       />
     </div>
   );

@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from "react";
 
 function Console(props) {
   const {
-    setPlayerGraphicsAction,
     newHand,
     player1Graphics,
     player2Graphics,
@@ -13,7 +12,6 @@ function Console(props) {
     handleBet,
     handleCall,
     inHandPlayers,
-    removePlayerFromHand,
     handleCheck,
     handleFold,
     round,
@@ -22,7 +20,8 @@ function Console(props) {
     forceBreak,
     button,
     moveButton,
-    setPlayerCard,
+    clearAllLoadedCards,
+    handleAllIn,
   } = props;
 
   const [player1ActionInput, setPlayer1ActionInput] = useState("");
@@ -193,6 +192,11 @@ function Console(props) {
       forceBreak();
     } else if (key === "e") {
       moveButton();
+    } else if (key === "r") {
+      clearAllLoadedCards();
+    } else if (key === "a") {
+      handleAllIn(player);
+      correctInputSetState("ALL-IN");
     }
 
     ///////////

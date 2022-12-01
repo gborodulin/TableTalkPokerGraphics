@@ -31,6 +31,7 @@ const SerialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
 const serialport = new SerialPort.SerialPort({
   path: "/dev/cu.usbserial-AU02NFHO",
+  // path: "/dev/cu.Pepper_C1-MUX-805930-SP",
   baudRate: 115200,
 });
 const parser = new Readline.ReadlineParser();
