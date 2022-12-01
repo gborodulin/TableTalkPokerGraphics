@@ -47,6 +47,7 @@ function App(props) {
           player === "5"
         ) {
           addPlayerCardGraphics(player, cardValue);
+          recalculateAllPercentages();
         } else if (player === "6" || player === "7" || player === "8") {
           addCommunityCardsGraphics(cardValue);
         }
@@ -54,12 +55,19 @@ function App(props) {
     });
   }, []);
 
+  useEffect(() => {
+    recalculateAllPercentages();
+  }, [communityCards]);
+
+  useEffect(() => {
+    recalculateAllPercentages();
+  }, [inHandPlayers]);
+
   //STATE
   const [button, setButton] = useState("5");
 
   const [communityCards, _setCommunityCards] = useState([]);
   const communityCardsRef = useRef(communityCards);
-
   const setCommunityCards = (data) => {
     _setCommunityCards(data);
     communityCardsRef.current = data;
@@ -135,6 +143,20 @@ function App(props) {
     player5GraphicsRef.current = data;
   };
 
+  const [inHandPlayers, _setInHandPlayers] = useState(playersAtTable);
+  const inHandPlayersRef = useRef(inHandPlayers);
+  const setInHandPlayers = (data) => {
+    _setInHandPlayers(data);
+    inHandPlayersRef.current = data;
+  };
+
+  const [allInPlayers, _setAllInPlayers] = useState([]);
+  const allInPlayersRef = useRef(allInPlayers);
+  const setAllInPlayers = (data) => {
+    _setAllInPlayers(data);
+    allInPlayersRef.current = data;
+  };
+
   const [pot, setPot] = useState(0);
 
   const [currentBet, setCurrentBet] = useState(0);
@@ -142,15 +164,12 @@ function App(props) {
   const [round, setRound] = useState("Break");
 
   const [graphicsFocusPlayer, setGraphicsFocusPlayer] = useState("1");
-  const [inHandPlayers, setInHandPlayers] = useState(playersAtTable);
-
-  const [allInPlayers, setAllInPlayers] = useState([]);
 
   //FUNCTIONS
 
   const addPlayerCardGraphics = (player, cardValue) => {
-    console.log("player", player);
-    console.log("cardValue", cardValue);
+    // console.log("player", player);
+    // console.log("cardValue", cardValue);
 
     const playerGraphicsRef = getCorrectGraphicsRef(player);
     const playerGraphicsSetState = getCorrectGraphicsSetState(player);
@@ -174,6 +193,49 @@ function App(props) {
     if (communityCardsRef.current.length <= 5) {
       setCommunityCards([...communityCardsRef.current, cardValue]);
     }
+  };
+
+  const recalculateAllPercentages = () => {
+    const Table = new TexasHoldem();
+
+    inHandPlayersRef.current.forEach((player) => {
+      const playerGraphicsRef = getCorrectGraphicsRef(player);
+
+      if (playerGraphicsRef.current.card2) {
+        Table.setPlayerHand(
+          [playerGraphicsRef.current.card1, playerGraphicsRef.current.card2],
+          player
+        );
+      }
+    });
+
+    allInPlayersRef.current.forEach((player) => {
+      const playerGraphicsRef = getCorrectGraphicsRef(player);
+
+      if (playerGraphicsRef.current.card2) {
+        Table.setPlayerHand(
+          [playerGraphicsRef.current.card1, playerGraphicsRef.current.card2],
+          player
+        );
+      }
+    });
+
+    if (communityCardsRef.current.length > 0) {
+      Table.setBoard([...communityCardsRef.current]);
+    }
+
+    const Result = Table.calculate();
+
+    Result.getPlayers().forEach((playerResult) => {
+      const player = playerResult.getName().split("Player #")[1][0];
+      const playerGraphicsRef = getCorrectGraphicsRef(player);
+      const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+
+      playerGraphicsSetState({
+        ...playerGraphicsRef.current,
+        percent: playerResult.getWinsPercentageString(),
+      });
+    });
   };
 
   const setNextRound = () => {
@@ -362,6 +424,7 @@ function App(props) {
         ...playerGraphicsState,
         card1: null,
         card2: null,
+        percent: null,
       });
     });
 
