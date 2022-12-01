@@ -26,52 +26,8 @@ function App(props) {
   //SOCKET
   let socket = io("http://localhost:8888", { transports: ["websocket"] });
 
-  useEffect(() => {
-    socket.off("serialdata").on("serialdata", (serialdata) => {
-      const antenna = serialdata.data.split("antenna: ")[1][0];
-      const cardUID = serialdata.data.split("UID: ")[1].split(",")[0];
-
-      if (!storedCards.includes(cardUID)) {
-        storedCards.push(cardUID);
-
-        const player = antenna2Player[antenna];
-        const cardValue = getCardValue(cardUID);
-
-        // console.log("player", player);
-        // console.log("cardValue", cardValue);
-        if (
-          player === "1" ||
-          player === "2" ||
-          player === "3" ||
-          player === "4" ||
-          player === "5"
-        ) {
-          addPlayerCardGraphics(player, cardValue);
-          recalculateAllPercentages();
-        } else if (player === "6" || player === "7" || player === "8") {
-          addCommunityCardsGraphics(cardValue);
-        }
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    recalculateAllPercentages();
-  }, [communityCards]);
-
-  useEffect(() => {
-    recalculateAllPercentages();
-  }, [inHandPlayers]);
-
   //STATE
   const [button, setButton] = useState("5");
-
-  const [communityCards, _setCommunityCards] = useState([]);
-  const communityCardsRef = useRef(communityCards);
-  const setCommunityCards = (data) => {
-    _setCommunityCards(data);
-    communityCardsRef.current = data;
-  };
 
   const [player1Graphics, _setPlayer1Graphics] = useState({
     action: "",
@@ -143,6 +99,13 @@ function App(props) {
     player5GraphicsRef.current = data;
   };
 
+  const [communityCards, _setCommunityCards] = useState([]);
+  const communityCardsRef = useRef(communityCards);
+  const setCommunityCards = (data) => {
+    _setCommunityCards(data);
+    communityCardsRef.current = data;
+  };
+
   const [inHandPlayers, _setInHandPlayers] = useState(playersAtTable);
   const inHandPlayersRef = useRef(inHandPlayers);
   const setInHandPlayers = (data) => {
@@ -164,6 +127,49 @@ function App(props) {
   const [round, setRound] = useState("Break");
 
   const [graphicsFocusPlayer, setGraphicsFocusPlayer] = useState("1");
+
+  //Use Effect
+
+  useEffect(() => {
+    socket.off("serialdata").on("serialdata", (serialdata) => {
+      const antenna = serialdata.data.split("antenna: ")[1][0];
+      const cardUID = serialdata.data.split("UID: ")[1].split(",")[0];
+
+      if (!storedCards.includes(cardUID)) {
+        storedCards.push(cardUID);
+
+        const player = antenna2Player[antenna];
+        const cardValue = getCardValue(cardUID);
+
+        // console.log("player", player);
+        // console.log("cardValue", cardValue);
+        if (
+          player === "1" ||
+          player === "2" ||
+          player === "3" ||
+          player === "4" ||
+          player === "5"
+        ) {
+          addPlayerCardGraphics(player, cardValue);
+          recalculateAllPercentages();
+        } else if (player === "6" || player === "7" || player === "8") {
+          addCommunityCardsGraphics(cardValue);
+        }
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    try {
+      recalculateAllPercentages();
+    } catch (e) {}
+  }, [communityCards]);
+
+  useEffect(() => {
+    try {
+      recalculateAllPercentages();
+    } catch (e) {}
+  }, [inHandPlayers]);
 
   //FUNCTIONS
 
@@ -246,14 +252,17 @@ function App(props) {
       setRound("Flop");
       clearInHandPlayersOnRound();
       setCurrentBet(0);
+      setGraphicsFocusPlayerOnRound();
     } else if (round === "Flop") {
       setRound("Turn");
       clearInHandPlayersOnRound();
       setCurrentBet(0);
+      setGraphicsFocusPlayerOnRound();
     } else if (round === "Turn") {
       setRound("River");
       clearInHandPlayersOnRound();
       setCurrentBet(0);
+      setGraphicsFocusPlayerOnRound();
     } else if (round === "River") {
       setRound("Break");
 
@@ -274,15 +283,22 @@ function App(props) {
     setGraphicsFocusPlayer(next);
   };
 
-  const setPreviousGraphicsFocusPlayer = () => {
-    var i = inHandPlayers.indexOf(graphicsFocusPlayer);
-    var len = inHandPlayers.length;
+  const setGraphicsFocusPlayerOnRound = () => {
+    let playerStillInHand = false;
+    let i = playersAtTable.indexOf(button);
 
-    var current = inHandPlayers[i];
-    var previous = inHandPlayers[(i + len - 1) % len];
-    var next = inHandPlayers[(i + 1) % len];
+    while (!playerStillInHand) {
+      var len = playersAtTable.length;
 
-    setGraphicsFocusPlayer(previous);
+      var next = playersAtTable[(i + 1) % len];
+
+      if (inHandPlayers.includes(next)) {
+        setGraphicsFocusPlayer(next);
+        playerStillInHand = true;
+      } else {
+        i = playersAtTable.indexOf(next);
+      }
+    }
   };
 
   const setNextButton_sb_bb_focus = () => {
