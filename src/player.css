@@ -3,16 +3,92 @@
   background-color: lightgray;
   border-radius: 4px;
   display: flex;
-  padding: 12px;
+  padding: 8px;
+  height: 70px;
+  width: 400px;
+  background: linear-gradient(135deg, rgb(248, 235, 154) 0%, rgb(244, 195, 91) 100%);
+  /* border: 1px solid black; */
+  overflow: hidden;
+  box-shadow: 2px 2px 5px rgb(50, 50, 50);
+  /* filter: drop-shadow(2px 3px 3px #59595b); */
+  /* animation! */
+  transform: translateX(0px);
+  transition: transform 1s ease-in-out;
+
 }
-.card {
-  font-size: 48px;
-  margin-right: 4px;
+
+.slide-out {
+  transform: translateX(-500px);
+
+
 }
+
+/* 
+@keyframes slideOut {
+  0% {
+    transform: translateX(0px)
+  }
+
+  90% {
+    transform: translateX(-800px);
+
+  }
+
+  100% {
+    display: none;
+  }
+} */
+
+
+.name-cont {
+  position: relative;
+  width: 180px;
+  background-color: rgba(0, 0, 0, 0.2);
+  margin-right: 8px;
+  border-radius: 4px;
+
+}
+
+.cards-cont {
+  display: flex;
+  /* width: 180px; */
+  /* background-color: red; */
+  border-radius: 4px;
+}
+
+.action-cont {
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 120px;
+  margin-right: 8px;
+  position: relative;
+  border-radius: 4px;
+
+}
+
+
+
 .name {
-  margin-left: 16px;
-  font-size: 48px;
+  font-size: 38px;
   margin-right: 16px;
-  min-width: 220px;
   text-align: left;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  transform: translate(8px, -50%);
+  font-size: 40px;
+  width: 100%;
+  font-weight: bold;
+}
+
+.action {
+  text-align: center;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 30px;
+  width: 100%;
+  font-weight: bold;
+
 }

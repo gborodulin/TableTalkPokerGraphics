@@ -1,0 +1,94 @@
+.community-cont {
+  position: absolute;
+  top: 0;
+
+}
+
+.community {
+  margin: 16px;
+  background-color: lightgray;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  height: 150px;
+  width: 400px;
+  /* width: 400px; */
+  background: linear-gradient(135deg, rgb(248, 235, 154) 0%, rgb(244, 195, 91) 100%);
+  /* border: 1px solid black; */
+  overflow: hidden;
+  box-shadow: 2px 2px 5px rgb(50, 50, 50);
+  /* filter: drop-shadow(2px 3px 3px #59595b); */
+
+}
+
+
+
+.info-cont {
+  display: flex;
+  height: 50%;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.community-cards-cont {
+  display: flex;
+  height: 50%;
+  justify-content: space-between;
+}
+
+.round-cont {
+  background-color: rgba(0, 0, 0, 0.2);
+  height: 100%;
+  width: 160px;
+  margin-right: 8px;
+  border-radius: 4px;
+  position: relative;
+}
+
+.round {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  font-size: 36px;
+  font-weight: bold;
+}
+
+
+.pot-cont {
+  background-color: rgba(0, 0, 0, 0.2);
+  height: 100%;
+  width: 240px;
+  border-radius: 4px;
+  /* width: 100%; */
+  position: relative;
+}
+
+.pot {
+  font-size: 30px;
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  transform: translate(0%, -50%);
+}
+
+
+
+
+.card {
+  margin-right: 4px;
+  -webkit-animation: slideIn 1s ease-in-out;
+  animation: slideIn 1s ease-in-out;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(100px)
+  }
+
+  100% {
+    transform: translateY(0px)
+  }
+}
