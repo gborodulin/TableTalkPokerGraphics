@@ -31,13 +31,12 @@ function Card(props) {
     }
   }
 
-  // console.log(rank, suit);
   return (
     <div className="card">
       <div className="rank" style={{ color: textcolor }}>
         {rank}
       </div>
-      <div className="suit">{suit}</div>
+      <div className="suit" style={{ color: textcolor }}>{suit}</div>
     </div>
   );
 }

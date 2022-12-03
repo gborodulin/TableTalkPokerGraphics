@@ -1,11 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
+import { TexasHoldem } from "poker-odds-calc";
+import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import "./App.css";
-import Player from "./Player";
-import Console from "./Console";
-import Card from "./Card";
 import CardDictionary from "./CardDictionary.js";
-import { TexasHoldem } from "poker-odds-calc";
+import Community from "./Community";
+import Console from "./Console";
+
+import Player from "./Player";
+import { genRandomCard } from "./utils";
 
 const antenna2Player = {
   1: "1",
@@ -162,13 +164,13 @@ function App(props) {
   useEffect(() => {
     try {
       recalculateAllPercentages();
-    } catch (e) {}
+    } catch (e) { }
   }, [communityCards]);
 
   useEffect(() => {
     try {
       recalculateAllPercentages();
-    } catch (e) {}
+    } catch (e) { }
   }, [inHandPlayers]);
 
   //FUNCTIONS
@@ -574,37 +576,24 @@ function App(props) {
     setInHandPlayers(newArray);
   };
 
+  let randCommunityCards = [genRandomCard(), genRandomCard(), genRandomCard(), genRandomCard(), genRandomCard()]
   return (
     <div className="App">
       {round !== "Break" ? (
         <div className="playerGraphics">
-          {inHandPlayers.includes("1") || allInPlayers.includes("1") ? (
-            <Player graphics={player1Graphics} />
-          ) : null}
-          {inHandPlayers.includes("2") || allInPlayers.includes("2") ? (
-            <Player graphics={player2Graphics} />
-          ) : null}
-          {inHandPlayers.includes("3") || allInPlayers.includes("3") ? (
-            <Player graphics={player3Graphics} />
-          ) : null}
-          {inHandPlayers.includes("4") || allInPlayers.includes("4") ? (
-            <Player graphics={player4Graphics} />
-          ) : null}
-          {inHandPlayers.includes("5") || allInPlayers.includes("5") ? (
-            <Player graphics={player5Graphics} />
-          ) : null}
+
+          <Player graphics={player1Graphics} display={(inHandPlayers.includes("1") || allInPlayers.includes("1"))} />
+          <Player graphics={player2Graphics} display={(inHandPlayers.includes("2") || allInPlayers.includes("2"))} />
+          <Player graphics={player3Graphics} display={(inHandPlayers.includes("3") || allInPlayers.includes("3"))} />
+          <Player graphics={player4Graphics} display={(inHandPlayers.includes("4") || allInPlayers.includes("4"))} />
+          <Player graphics={player5Graphics} display={(inHandPlayers.includes("5") || allInPlayers.includes("5"))} />
+
+
         </div>
       ) : null}
 
       {round !== "Break" ? (
-        <div className="pot_community">
-          <div className="pot">POT: ${pot}</div>
-          <div className="community">
-            {communityCards.map((cardValue) => (
-              <Card cardValue={cardValue} />
-            ))}
-          </div>
-        </div>
+        <Community pot={pot} cards={randCommunityCards} round={round} />
       ) : null}
 
       <Console

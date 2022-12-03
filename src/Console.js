@@ -1,5 +1,5 @@
+import { useEffect, useRef, useState } from "react";
 import "./console.css";
-import { useState, useRef, useEffect } from "react";
 
 function Console(props) {
   const {
@@ -219,7 +219,7 @@ function Console(props) {
 
   return (
     <div className="console" onKeyDown={handleKeyDown}>
-      <div className="round">{round}</div>
+      <div className="round-console">{round}</div>
       <div className="playerConsoleBox">
         <div className="playerConsoleBoxName">
           {player1Graphics.name} {button === "1" ? "-B" : null}

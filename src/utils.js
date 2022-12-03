@@ -9,16 +9,16 @@ export function generateStringFromSuit(suit) {
   let suitString = "ERR_SUIT";
   switch (suit) {
     case SUITS.HEARTS:
-      suitString = "\u2665";
+      suitString = "h";
       break;
     case SUITS.SPADES:
-      suitString = "\u2660";
+      suitString = "s";
       break;
     case SUITS.CLUBS:
-      suitString = "\u2663";
+      suitString = "c";
       break;
     case SUITS.DIAMONDS:
-      suitString = "\u2666";
+      suitString = "d";
       break;
   }
 
@@ -34,5 +34,5 @@ export function genRandomCard() {
   let rank = Math.floor(Math.random() * 10) + 1;
   let suit = Object.values(SUITS)[Math.floor(Math.random() * 3)];
   suit = generateStringFromSuit(suit);
-  return { rank, suit }
+  return [rank, suit]
 }
