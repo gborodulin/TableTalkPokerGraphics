@@ -150,7 +150,7 @@ function Console(props) {
   const handleKeyDown = (e) => {
     const player = e.target.id;
     const key = e.key;
-    // console.log(e.key);
+    console.log(e.key);
 
     const correctInputSetState = getCorrectInputSetState(player);
 
@@ -197,6 +197,14 @@ function Console(props) {
     } else if (key === "a") {
       handleAllIn(player);
       correctInputSetState("ALL-IN");
+
+      //move this if value is added to all-in
+      inHandPlayers.forEach((curPlayer) => {
+        if (curPlayer !== player) {
+          const correctInputSetState = getCorrectInputSetState(curPlayer);
+          correctInputSetState("");
+        }
+      });
     }
 
     ///////////
