@@ -322,6 +322,7 @@ function App(props) {
     smallBlindPlayerSetState({
       ...smallBlindPlayerState,
       action: `$${smallBlind}`,
+      currentPlayerBet: smallBlind,
     });
 
     const bigBlindPlayerState = getCorrectGraphicsState(bigBlindPlayer);
@@ -330,6 +331,7 @@ function App(props) {
     bigBlindPlayerSetState({
       ...bigBlindPlayerState,
       action: `$${bigBlind}`,
+      currentPlayerBet: bigBlind,
     });
 
     playersAtTable.forEach((player) => {
@@ -370,6 +372,7 @@ function App(props) {
         ...correctGraphicsState,
         // action: `${amount - correctGraphicsState.currentPlayerBet} to Call`,
         action: "",
+        currentPlayerBet: 0,
       });
     });
   };
@@ -565,6 +568,7 @@ function App(props) {
     removePlayerFromHand(player);
     setNextGraphicsFocusPlayer();
     setAllInPlayers([...allInPlayers, player]);
+    clearInHandPlayersOnBet(player);
   };
 
   const removePlayerFromHand = (player) => {
