@@ -8,7 +8,7 @@
 
 .App {
   text-align: center;
-  /* background-color: green; */
+  background-color: green;
   height: 100vh;
   display: grid;
   grid-template-columns: 50% 50%;

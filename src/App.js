@@ -164,13 +164,13 @@ function App(props) {
   useEffect(() => {
     try {
       recalculateAllPercentages();
-    } catch (e) { }
+    } catch (e) {}
   }, [communityCards]);
 
   useEffect(() => {
     try {
       recalculateAllPercentages();
-    } catch (e) { }
+    } catch (e) {}
   }, [inHandPlayers]);
 
   //FUNCTIONS
@@ -576,24 +576,42 @@ function App(props) {
     setInHandPlayers(newArray);
   };
 
-  let randCommunityCards = [genRandomCard(), genRandomCard(), genRandomCard(), genRandomCard(), genRandomCard()]
+  let randCommunityCards = [
+    genRandomCard(),
+    genRandomCard(),
+    genRandomCard(),
+    genRandomCard(),
+    genRandomCard(),
+  ];
   return (
     <div className="App">
       {round !== "Break" ? (
         <div className="playerGraphics">
-
-          <Player graphics={player1Graphics} display={(inHandPlayers.includes("1") || allInPlayers.includes("1"))} />
-          <Player graphics={player2Graphics} display={(inHandPlayers.includes("2") || allInPlayers.includes("2"))} />
-          <Player graphics={player3Graphics} display={(inHandPlayers.includes("3") || allInPlayers.includes("3"))} />
-          <Player graphics={player4Graphics} display={(inHandPlayers.includes("4") || allInPlayers.includes("4"))} />
-          <Player graphics={player5Graphics} display={(inHandPlayers.includes("5") || allInPlayers.includes("5"))} />
-
-
+          <Player
+            graphics={player1Graphics}
+            display={inHandPlayers.includes("1") || allInPlayers.includes("1")}
+          />
+          <Player
+            graphics={player2Graphics}
+            display={inHandPlayers.includes("2") || allInPlayers.includes("2")}
+          />
+          <Player
+            graphics={player3Graphics}
+            display={inHandPlayers.includes("3") || allInPlayers.includes("3")}
+          />
+          <Player
+            graphics={player4Graphics}
+            display={inHandPlayers.includes("4") || allInPlayers.includes("4")}
+          />
+          <Player
+            graphics={player5Graphics}
+            display={inHandPlayers.includes("5") || allInPlayers.includes("5")}
+          />
         </div>
       ) : null}
 
       {round !== "Break" ? (
-        <Community pot={pot} cards={randCommunityCards} round={round} />
+        <Community pot={pot} cards={communityCards} round={round} />
       ) : null}
 
       <Console

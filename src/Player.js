@@ -3,26 +3,23 @@ import "./player.css";
 import { genRandomCard } from "./utils";
 
 function Player(props) {
-  const { display } = props;
+  const { display, graphics } = props;
 
+  // let graphics = {
+  //   action: "BET",
+  //   card1: genRandomCard(),
+  //   card2: genRandomCard(),
+  //   name: "Greg",
+  //   percent: 10,
+  //   currentPlayerBet: 123,
+  // };
 
-  let graphics = {
-
-    action: "BET",
-    card1: genRandomCard(),
-    card2: genRandomCard(),
-    name: "Greg",
-    percent: 10,
-    currentPlayerBet: 123,
-
-  }
-
-  let playerClass = "player" + (display ? "" : " slide-out")
-  console.log(display)
+  let playerClass = "player" + (display ? "" : " slide-out");
+  console.log(display);
   return (
     <div className={playerClass}>
       <div className="name-cont">
-        <div className={"name"} >{graphics.name}</div>
+        <div className={"name"}>{graphics.name}</div>
       </div>
 
       <div className="action-cont">

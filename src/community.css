@@ -1,7 +1,6 @@
 .community-cont {
   position: absolute;
   top: 0;
-
 }
 
 .community {
@@ -14,15 +13,16 @@
   height: 150px;
   width: 400px;
   /* width: 400px; */
-  background: linear-gradient(135deg, rgb(248, 235, 154) 0%, rgb(244, 195, 91) 100%);
+  background: linear-gradient(
+    135deg,
+    rgb(248, 235, 154) 0%,
+    rgb(244, 195, 91) 100%
+  );
   /* border: 1px solid black; */
   overflow: hidden;
   box-shadow: 2px 2px 5px rgb(50, 50, 50);
   /* filter: drop-shadow(2px 3px 3px #59595b); */
-
 }
-
-
 
 .info-cont {
   display: flex;
@@ -55,7 +55,6 @@
   font-weight: bold;
 }
 
-
 .pot-cont {
   background-color: rgba(0, 0, 0, 0.2);
   height: 100%;
@@ -74,9 +73,6 @@
   transform: translate(0%, -50%);
 }
 
-
-
-
 .card {
   margin-right: 4px;
   -webkit-animation: slideIn 1s ease-in-out;
@@ -85,10 +81,10 @@
 
 @keyframes slideIn {
   0% {
-    transform: translateY(100px)
+    transform: translateY(100px);
   }
 
   100% {
-    transform: translateY(0px)
+    transform: translateY(0px);
   }
 }
