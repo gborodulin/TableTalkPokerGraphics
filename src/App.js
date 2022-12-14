@@ -343,6 +343,7 @@ function App(props) {
           ...playerGraphicsState,
 
           action: "",
+          currentPlayerBet: 0,
         });
       }
     });
@@ -429,9 +430,7 @@ function App(props) {
 
     setRound("PreFlop");
 
-    clearAllPlayerCurrentBet();
-
-    clearAllPlayerActions();
+    // clearAllPlayerActions();
 
     setNextButton_sb_bb_focus();
   };
@@ -576,13 +575,6 @@ function App(props) {
     setInHandPlayers(newArray);
   };
 
-  let randCommunityCards = [
-    genRandomCard(),
-    genRandomCard(),
-    genRandomCard(),
-    genRandomCard(),
-    genRandomCard(),
-  ];
   return (
     <div className="App">
       {round !== "Break" ? (
