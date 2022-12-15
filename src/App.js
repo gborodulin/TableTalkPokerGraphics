@@ -7,7 +7,6 @@ import Community from "./Community";
 import Console from "./Console";
 
 import Player from "./Player";
-import { genRandomCard } from "./utils";
 
 const antenna2Player = {
   1: "1",
@@ -164,13 +163,13 @@ function App(props) {
   useEffect(() => {
     try {
       recalculateAllPercentages();
-    } catch (e) {}
+    } catch (e) { }
   }, [communityCards]);
 
   useEffect(() => {
     try {
       recalculateAllPercentages();
-    } catch (e) {}
+    } catch (e) { }
   }, [inHandPlayers]);
 
   //FUNCTIONS
@@ -479,6 +478,7 @@ function App(props) {
   const forceBreak = () => {
     setRound("Break");
     clearAllLoadedCards();
+
   };
 
   const moveButton = () => {
@@ -575,36 +575,42 @@ function App(props) {
     setInHandPlayers(newArray);
   };
 
+  let playerGraphicsClass = "playerGraphics" + (round !== "Break" ? " alive" : "");
+
+
   return (
     <div className="App">
-      {round !== "Break" ? (
-        <div className="playerGraphics">
-          <Player
-            graphics={player1Graphics}
-            display={inHandPlayers.includes("1") || allInPlayers.includes("1")}
-          />
-          <Player
-            graphics={player2Graphics}
-            display={inHandPlayers.includes("2") || allInPlayers.includes("2")}
-          />
-          <Player
-            graphics={player3Graphics}
-            display={inHandPlayers.includes("3") || allInPlayers.includes("3")}
-          />
-          <Player
-            graphics={player4Graphics}
-            display={inHandPlayers.includes("4") || allInPlayers.includes("4")}
-          />
-          <Player
-            graphics={player5Graphics}
-            display={inHandPlayers.includes("5") || allInPlayers.includes("5")}
-          />
-        </div>
-      ) : null}
+      <div className={playerGraphicsClass}>
+        <Player
+          focus={graphicsFocusPlayer === "1"}
+          graphics={player1Graphics}
+          display={inHandPlayers.includes("1") || allInPlayers.includes("1")}
+        />
+        <Player
+          focus={graphicsFocusPlayer === "2"}
+          graphics={player2Graphics}
+          display={inHandPlayers.includes("2") || allInPlayers.includes("2")}
+        />
+        <Player
+          focus={graphicsFocusPlayer === "3"}
+          graphics={player3Graphics}
+          display={inHandPlayers.includes("3") || allInPlayers.includes("3")}
+        />
+        <Player
+          focus={graphicsFocusPlayer === "4"}
+          graphics={player4Graphics}
+          display={inHandPlayers.includes("4") || allInPlayers.includes("4")}
+        />
+        <Player
+          focus={graphicsFocusPlayer === "5"}
+          graphics={player5Graphics}
+          display={inHandPlayers.includes("5") || allInPlayers.includes("5")}
+        />
+      </div>
 
-      {round !== "Break" ? (
-        <Community pot={pot} cards={communityCards} round={round} />
-      ) : null}
+
+      <Community pot={pot} cards={communityCards} round={round} />
+
 
       <Console
         player1Graphics={player1Graphics}

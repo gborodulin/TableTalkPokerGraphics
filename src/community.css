@@ -1,6 +1,14 @@
 .community-cont {
   position: absolute;
   top: 0;
+  opacity: 0%;
+  transition: opacity 1s ease-in-out;
+
+}
+
+.alive-community {
+  opacity: 100%;
+
 }
 
 .community {
@@ -9,15 +17,14 @@
   border-radius: 4px;
   display: flex;
   flex-direction: column;
+
   padding: 8px;
   height: 150px;
   width: 400px;
   /* width: 400px; */
-  background: linear-gradient(
-    135deg,
-    rgb(248, 235, 154) 0%,
-    rgb(244, 195, 91) 100%
-  );
+  background: linear-gradient(135deg,
+      rgb(248, 235, 154) 0%,
+      rgb(244, 195, 91) 100%);
   /* border: 1px solid black; */
   overflow: hidden;
   box-shadow: 2px 2px 5px rgb(50, 50, 50);
@@ -34,7 +41,8 @@
 .community-cards-cont {
   display: flex;
   height: 50%;
-  justify-content: space-between;
+  justify-content: left;
+
 }
 
 .round-cont {

@@ -1,9 +1,8 @@
 import Card from "./Card";
 import "./player.css";
-import { genRandomCard } from "./utils";
 
 function Player(props) {
-  const { display, graphics } = props;
+  const { display, graphics, focus, } = props;
 
   // let graphics = {
   //   action: "BET",
@@ -14,8 +13,19 @@ function Player(props) {
   //   currentPlayerBet: 123,
   // };
 
-  let playerClass = "player" + (display ? "" : " slide-out");
-  console.log(display);
+
+  let playerClass = "player" + (display ? "" : " fold");
+  playerClass = playerClass + (!focus ? "" : " focus");
+  let percentStr = "";
+
+  if (graphics.percent !== null) {
+
+    percentStr = '' + graphics.percent
+    percentStr = percentStr.replace('~', '');
+    percentStr = percentStr.split('.')[0]
+    percentStr += '%'
+  }
+
   return (
     <div className={playerClass}>
       <div className="name-cont">
@@ -27,14 +37,15 @@ function Player(props) {
       </div>
 
       <div className="cards-cont">
-        <Card className="card" cardValue={graphics.card1} />
-        <Card className="card" cardValue={graphics.card2} />
+        {graphics.card1 === null ? null : <Card className="card" cardValue={graphics.card1} />}
+
+        {graphics.card2 === null ? null : <Card className="card" cardValue={graphics.card2} />}
+        {/* <Card className="card" cardValue={graphics.card2} /> */}
       </div>
 
       {/* <div className="other-cont">
-        <div className="percent">{graphics.percent}</div>
+        <div className="other-text">{graphics.percent}</div>
       </div> */}
-      {/* <div className="curPlayerBet">{graphics.currentPlayerBet}</div> */}
     </div>
   );
 }

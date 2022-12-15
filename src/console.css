@@ -5,6 +5,12 @@
   display: grid;
   grid-template-columns: 100%;
   grid-template-rows: 5% 15% 15% 15% 15% 15%;
+  z-index: 2;
+  background-color: cornflowerblue;
+  width: 300px;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 input {
@@ -15,6 +21,7 @@ input {
 
 .round-console {
   font-size: 40px;
+  font-weight: bold;
   justify-self: center;
 }
 
@@ -23,6 +30,11 @@ input {
   padding: 12px;
   width: 75%;
   justify-self: flex-end;
+}
+
+.playerConsoleBoxName {
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .controlKeys {

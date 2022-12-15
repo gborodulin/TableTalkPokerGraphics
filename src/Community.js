@@ -4,8 +4,10 @@ import "./community.css";
 function Community(props) {
   const { pot, cards, round } = props;
 
+  let contClass = "community-cont" + (round !== "Break" ? " alive-community" : "");
+
   return (
-    <div className="community-cont">
+    <div className={contClass}>
       <div className="community">
         <div className="info-cont">
           {/* <div className="round-cont">
