@@ -26,6 +26,7 @@ function Player(props) {
     percentStr += '%'
   }
 
+
   return (
     <div className={playerClass}>
       <div className="name-cont">
@@ -38,14 +39,13 @@ function Player(props) {
 
       <div className="cards-cont">
         {graphics.card1 === null ? null : <Card className="card" cardValue={graphics.card1} />}
-
         {graphics.card2 === null ? null : <Card className="card" cardValue={graphics.card2} />}
-        {/* <Card className="card" cardValue={graphics.card2} /> */}
-      </div>
 
-      {/* <div className="other-cont">
-        <div className="other-text">{graphics.percent}</div>
-      </div> */}
+      </div>
+      {graphics.percent !== null ?
+        <div className="other-cont">
+          <div className="other-text">{percentStr}</div>
+        </div> : null}
     </div>
   );
 }

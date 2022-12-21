@@ -6,11 +6,13 @@
   margin: 16px;
   opacity: 0%;
   transition: opacity 1s ease-in-out;
+  z-index: 0;
+  opacity: 1.0;
 }
 
 
 .player {
-  background-color: lightgray;
+  position: relative;
   border-radius: 4px;
   display: flex;
   padding: 8px;
@@ -18,15 +20,12 @@
   width: 400px;
   background: linear-gradient(135deg, rgb(248, 235, 154) 0%, rgb(244, 195, 91) 100%);
   margin-bottom: 10px;
-  overflow: hidden;
+  /* overflow: hidden; */
   box-shadow: 2px 2px 5px rgb(50, 50, 50);
   /* animation! */
   transform: translateX(0px);
   transition: all 1s ease-in-out;
-
-
-
-
+  opacity: 1.0;
 }
 
 .fold {
@@ -103,14 +102,14 @@
 
 .other-cont {
   position: absolute;
-  top: 30%;
-  transform: translateX(400px);
-  width: 60px;
+  top: calc(50% - 20px);
+  left: calc(100% - 8px);
+  /* transform: translateX(400px); */
+  width: 70px;
   background-color: white;
-
   border-radius: 6px;
-  height: 30px;
-
+  height: 40px;
+  z-index: -1;
 
 }
 
@@ -119,9 +118,9 @@
   margin: 0;
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  right: 0;
+  transform: translate(0%, -50%);
   font-size: 20px;
-  width: 100%;
+  margin-right: 8px;
   font-weight: bold;
 }
