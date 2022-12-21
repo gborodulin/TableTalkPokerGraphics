@@ -9,19 +9,19 @@ import Console from "./Console";
 import Player from "./Player";
 
 const antenna2Player = {
-  1: "1",
+  1: "3",
   2: "2",
-  3: "3",
-  4: "4",
-  5: "5",
-  6: "6",
+  3: "1",
+  4: "6",
+  5: "4",
+  6: "8",
   7: "7",
-  8: "8",
+  8: "5",
 };
 let storedCards = [];
 const playersAtTable = ["1", "2", "3", "4", "5"];
-const smallBlind = 1;
-const bigBlind = 2;
+const smallBlind = 0.25;
+const bigBlind = 0.5;
 
 function App(props) {
   //SOCKET
@@ -163,16 +163,39 @@ function App(props) {
   useEffect(() => {
     try {
       recalculateAllPercentages();
-    } catch (e) { }
+    } catch (e) {}
   }, [communityCards]);
 
   useEffect(() => {
     try {
       recalculateAllPercentages();
-    } catch (e) { }
+    } catch (e) {}
   }, [inHandPlayers]);
 
   //FUNCTIONS
+
+  const isRoundOver = () => {
+    let roundOver = true;
+
+    inHandPlayers.forEach((player) => {
+      const playerGraphicsRef = getCorrectGraphicsRef(player);
+      if (
+        !playerGraphicsRef.current.action ||
+        playerGraphicsRef.current.action.includes("BTN") ||
+        playerGraphicsRef.current.action.includes("SB") ||
+        playerGraphicsRef.current.action.includes("BB")
+      ) {
+        roundOver = false;
+      }
+      console.log(playerGraphicsRef.current.action);
+    });
+
+    if (roundOver) {
+      setGraphicsFocusPlayer(null);
+    } else {
+      setNextGraphicsFocusPlayer();
+    }
+  };
 
   const addPlayerCardGraphics = (player, cardValue) => {
     // console.log("player", player);
@@ -320,7 +343,7 @@ function App(props) {
 
     smallBlindPlayerSetState({
       ...smallBlindPlayerState,
-      action: `$${smallBlind}`,
+      action: "SB",
       currentPlayerBet: smallBlind,
     });
 
@@ -329,12 +352,22 @@ function App(props) {
 
     bigBlindPlayerSetState({
       ...bigBlindPlayerState,
-      action: `$${bigBlind}`,
+      action: "BB",
       currentPlayerBet: bigBlind,
     });
 
     playersAtTable.forEach((player) => {
-      if (player !== bigBlindPlayer && player !== smallBlindPlayer) {
+      if (player === newButton) {
+        const playerGraphicsState = getCorrectGraphicsState(player);
+        const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+
+        playerGraphicsSetState({
+          ...playerGraphicsState,
+
+          action: "BTN",
+          currentPlayerBet: 0,
+        });
+      } else if (player !== bigBlindPlayer && player !== smallBlindPlayer) {
         const playerGraphicsState = getCorrectGraphicsState(player);
         const playerGraphicsSetState = getCorrectGraphicsSetState(player);
 
@@ -427,11 +460,11 @@ function App(props) {
 
     setPot(smallBlind + bigBlind);
 
-    setRound("PreFlop");
-
-    // clearAllPlayerActions();
-
     setNextButton_sb_bb_focus();
+
+    setTimeout(() => {
+      setRound("PreFlop");
+    }, [700]);
   };
 
   const clearAllLoadedCards = () => {
@@ -478,7 +511,6 @@ function App(props) {
   const forceBreak = () => {
     setRound("Break");
     clearAllLoadedCards();
-
   };
 
   const moveButton = () => {
@@ -539,7 +571,7 @@ function App(props) {
     const newPotSize = trueAmount + pot;
     setPot(newPotSize);
 
-    setNextGraphicsFocusPlayer();
+    isRoundOver();
   };
 
   const handleCheck = (player) => {
@@ -547,12 +579,12 @@ function App(props) {
     const playerGraphicsSetState = getCorrectGraphicsSetState(player);
 
     playerGraphicsSetState({ ...playerGraphicsState, action: "Check" });
-    setNextGraphicsFocusPlayer();
+    isRoundOver();
   };
 
   const handleFold = (player) => {
     removePlayerFromHand(player);
-    setNextGraphicsFocusPlayer();
+    isRoundOver();
   };
 
   const handleAllIn = (player) => {
@@ -575,8 +607,8 @@ function App(props) {
     setInHandPlayers(newArray);
   };
 
-  let playerGraphicsClass = "playerGraphics" + (round !== "Break" ? " alive" : "");
-
+  let playerGraphicsClass =
+    "playerGraphics" + (round !== "Break" ? " alive" : "");
 
   return (
     <div className="App">
@@ -608,9 +640,7 @@ function App(props) {
         />
       </div>
 
-
       <Community pot={pot} cards={communityCards} round={round} />
-
 
       <Console
         player1Graphics={player1Graphics}

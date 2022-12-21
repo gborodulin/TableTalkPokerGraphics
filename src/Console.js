@@ -150,7 +150,7 @@ function Console(props) {
   const handleKeyDown = (e) => {
     const player = e.target.id;
     const key = e.key;
-    console.log(e.key);
+    // console.log(e.key);
 
     const correctInputSetState = getCorrectInputSetState(player);
 
@@ -159,7 +159,7 @@ function Console(props) {
 
       if (correctInputState.includes("BET")) {
         let amountString = correctInputState.split(" ")[1];
-        let amount = parseInt(amountString);
+        let amount = parseFloat(amountString);
         handleBet(player, amount);
 
         inHandPlayers.forEach((curPlayer) => {
@@ -169,32 +169,28 @@ function Console(props) {
           }
         });
       }
-
-      // if (consoleFocusPlayer === 5) setConsoleFocusPlayer(1);
-      // else setConsoleFocusPlayer(consoleFocusPlayer + 1);
-      // // console.log(consoleFocusPlayer)
-    } else if (key === "z") {
+    } else if (key === "Clear") {
       correctInputSetState("CHECK");
       handleCheck(player);
       // setPlayerCard(player, "Ad");
-    } else if (key === "c") {
+    } else if (key === "/") {
       correctInputSetState("CALL");
       handleCall(player);
-    } else if (key === "b") {
+    } else if (key === "+") {
       correctInputSetState("BET ");
-    } else if (key === "f") {
+    } else if (key === "*") {
       correctInputSetState("FOLD");
       handleFold(player);
-    } else if (key === "q") {
+    } else if (key === "PageUp") {
       clearAllInputStates();
       newHand();
-    } else if (key === "w") {
+    } else if (key === "PageDown") {
       forceBreak();
-    } else if (key === "e") {
+    } else if (key === "F13") {
       moveButton();
-    } else if (key === "r") {
+    } else if (key === "Delete") {
       clearAllLoadedCards();
-    } else if (key === "a") {
+    } else if (key === "-") {
       handleAllIn(player);
       correctInputSetState("ALL-IN");
 
