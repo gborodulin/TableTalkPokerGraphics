@@ -38,11 +38,14 @@ const parser = new Readline.ReadlineParser();
 serialport.pipe(parser);
 
 //-------
+var counter = 0;
 
 parser.on("data", (data) => {
   // const cardUID = data.split("UID: ")[1].split(",")[0];
   // console.log(cardUID);
 
-  console.log(data);
-  io.emit("serialdata", { data });
+  console.log(counter, data);
+  // io.emit("serialdata", { data });
+  
+  counter += 1;
 });
