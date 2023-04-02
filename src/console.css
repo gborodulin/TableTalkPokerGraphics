@@ -8,6 +8,7 @@
   z-index: 2;
   background-color: cornflowerblue;
   width: 300px;
+  height: 100%;
   position: absolute;
   top: 0;
   right: 0;
@@ -39,4 +40,12 @@ input {
 
 .controlKeys {
   font-size: large;
+}
+
+.gameSettings {
+  margin-top: 50px;
+  font-size: 40px;
+  height: 25%;
+  width: 90%;
+  justify-self: center;
 }

@@ -1,43 +1,45 @@
 .card {
-    background-color: white;
-    position: relative;
-    /* height: 60px; */
-    /* overflow: hidden; */
-    width: 70px;
-    border-radius: 5px;
-    filter: drop-shadow(2px 3px 3px #59595b);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(235, 235, 245, 1) 100%);
-    margin-right: 4px;
-    -webkit-animation: slideIn 1s ease-in-out;
-    animation: slideIn 1s ease-in-out;
+  background-color: white;
+  position: relative;
+  /* height: 60px; */
+  /* overflow: hidden; */
+  width: 70px;
+  border-radius: 5px;
+  filter: drop-shadow(2px 3px 3px #59595b);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(235, 235, 245, 1) 100%
+  );
+  margin-right: 4px;
+  -webkit-animation: slideIn 1s ease-in-out;
+  animation: slideIn 1s ease-in-out;
+  margin-bottom: 2px;
 }
 
-
 @keyframes slideIn {
-    0% {
-        transform: translateY(100px)
-    }
+  0% {
+    transform: translateY(100px);
+  }
 
-    100% {
-        transform: translateY(0px)
-    }
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .rank {
-    position: absolute;
-    font-size: 35px;
-    top: 0;
-    left: 6px;
-    letter-spacing: -3px;
-    font-weight: bold;
-
+  position: absolute;
+  font-size: 35px;
+  top: 0;
+  left: 6px;
+  letter-spacing: -3px;
+  font-weight: bold;
 }
 
 .suit {
-    position: absolute;
-    font-size: 42px;
-    position: absolute;
-    bottom: -4px;
-    right: 1px;
-
+  position: absolute;
+  font-size: 42px;
+  position: absolute;
+  bottom: -4px;
+  right: 1px;
 }

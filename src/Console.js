@@ -22,6 +22,9 @@ function Console(props) {
     moveButton,
     clearAllLoadedCards,
     handleAllIn,
+    changePlayerName,
+    changePlayersAtTable,
+    changeBlinds,
   } = props;
 
   const [player1ActionInput, setPlayer1ActionInput] = useState("");
@@ -29,6 +32,7 @@ function Console(props) {
   const [player3ActionInput, setPlayer3ActionInput] = useState("");
   const [player4ActionInput, setPlayer4ActionInput] = useState("");
   const [player5ActionInput, setPlayer5ActionInput] = useState("");
+  const [gameSettingsInput, setGameSettingsInput] = useState("");
 
   const [consoleFocusPlayer, setConsoleFocusPlayer] = useState("1");
 
@@ -169,16 +173,16 @@ function Console(props) {
           }
         });
       }
-    } else if (key === "Clear") {
+    } else if (key === "z") {
       correctInputSetState("CHECK");
       handleCheck(player);
       // setPlayerCard(player, "Ad");
-    } else if (key === "/") {
+    } else if (key === "c") {
       correctInputSetState("CALL");
       handleCall(player);
-    } else if (key === "+") {
+    } else if (key === "b") {
       correctInputSetState("BET ");
-    } else if (key === "*") {
+    } else if (key === "f") {
       correctInputSetState("FOLD");
       handleFold(player);
     } else if (key === "PageUp") {
@@ -188,7 +192,7 @@ function Console(props) {
       forceBreak();
     } else if (key === "F13") {
       moveButton();
-    } else if (key === "Delete") {
+    } else if (key === "q") {
       clearAllLoadedCards();
     } else if (key === "-") {
       handleAllIn(player);
@@ -213,8 +217,47 @@ function Console(props) {
     }
   };
 
+  const gameSettingsChange = (e) => {
+    setGameSettingsInput(e.target.value);
+  };
+
+  const gameSettingsKeyDown = (e) => {
+    const key = e.key;
+    if (key === "Enter") {
+      const settingType = gameSettingsInput.split("-")[0];
+
+      switch (settingType) {
+        case "name":
+          const player = gameSettingsInput.split("-")[1];
+          const newName = gameSettingsInput.split("-")[2];
+          changePlayerName(player, newName);
+
+          break;
+        case "seats":
+          const seatsString = gameSettingsInput.split("-")[1];
+          const seatsArray = seatsString.split(",");
+          changePlayersAtTable(seatsArray);
+
+          break;
+        case "blinds":
+          const smallString = gameSettingsInput.split("-")[1];
+          const bigString = gameSettingsInput.split("-")[2];
+
+          const smallNum = parseFloat(smallString);
+          const bigNum = parseFloat(bigString);
+
+          changeBlinds(smallNum, bigNum);
+          break;
+        default:
+        // code block
+      }
+
+      setGameSettingsInput("");
+    }
+  };
+
   return (
-    <div className="console" onKeyDown={handleKeyDown}>
+    <div className="console">
       <div className="round-console">{round}</div>
       <div className="playerConsoleBox">
         <div className="playerConsoleBoxName">
@@ -285,6 +328,15 @@ function Console(props) {
           onKeyDown={handleKeyDown}
         />
       </div>
+
+      <input
+        className="gameSettings"
+        type="text"
+        id="gameSettings"
+        value={gameSettingsInput}
+        onChange={gameSettingsChange}
+        onKeyDown={gameSettingsKeyDown}
+      />
       {/* 
       <div className="controlKeys">
         <p>Q - New Hand</p>

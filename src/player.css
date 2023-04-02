@@ -7,9 +7,7 @@
   opacity: 0%;
   transition: opacity 1s ease-in-out;
   z-index: 0;
-  opacity: 1.0;
 }
-
 
 .player {
   position: relative;
@@ -18,14 +16,18 @@
   padding: 8px;
   height: 70px;
   width: 400px;
-  background: linear-gradient(135deg, rgb(248, 235, 154) 0%, rgb(244, 195, 91) 100%);
+  background: linear-gradient(
+    135deg,
+    rgb(248, 235, 154) 0%,
+    rgb(244, 195, 91) 100%
+  );
   margin-bottom: 10px;
   /* overflow: hidden; */
   box-shadow: 2px 2px 5px rgb(50, 50, 50);
   /* animation! */
   transform: translateX(0px);
   transition: all 1s ease-in-out;
-  opacity: 1.0;
+  opacity: 1;
 }
 
 .fold {
@@ -35,17 +37,14 @@
   padding: 0;
 }
 
-
 .alive {
   /* transform: translateX(0px); */
   opacity: 110%;
-
 }
 
 .focus {
   transform: translateX(50px);
 }
-
 
 .name-cont {
   position: relative;
@@ -53,7 +52,6 @@
   background-color: rgba(0, 0, 0, 0.2);
   margin-right: 8px;
   border-radius: 4px;
-
 }
 
 .cards-cont {
@@ -62,6 +60,7 @@
   /* width: 180px; */
   /* background-color: red; */
   border-radius: 4px;
+  overflow: hidden;
 }
 
 .action-cont {
@@ -70,9 +69,7 @@
   margin-right: 8px;
   position: relative;
   border-radius: 4px;
-
 }
-
 
 .name {
   font-size: 32px;
@@ -99,7 +96,6 @@
   font-weight: bold;
 }
 
-
 .other-cont {
   position: absolute;
   top: calc(50% - 20px);
@@ -110,7 +106,6 @@
   border-radius: 6px;
   height: 40px;
   z-index: -1;
-
 }
 
 .other-text {

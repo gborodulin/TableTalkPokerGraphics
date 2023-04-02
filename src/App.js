@@ -19,9 +19,9 @@ const antenna2Player = {
   8: "5",
 };
 let storedCards = [];
-const playersAtTable = ["1", "2", "3", "4", "5"];
-const smallBlind = 0.25;
-const bigBlind = 0.5;
+let playersAtTable = ["1", "2", "3", "4", "5"];
+let smallBlind = 0.5;
+let bigBlind = 1;
 
 function App(props) {
   //SOCKET
@@ -34,7 +34,7 @@ function App(props) {
     action: "",
     card1: null,
     card2: null,
-    name: "Greg",
+    name: "Jules",
     percent: null,
     currentPlayerBet: 0,
   });
@@ -48,7 +48,7 @@ function App(props) {
     action: "",
     card1: null,
     card2: null,
-    name: "Josh",
+    name: "Matt",
     percent: null,
     currentPlayerBet: 0,
   });
@@ -62,7 +62,7 @@ function App(props) {
     action: "",
     card1: null,
     card2: null,
-    name: "David",
+    name: "Mike",
     percent: null,
     currentPlayerBet: 0,
   });
@@ -76,7 +76,7 @@ function App(props) {
     action: "",
     card1: null,
     card2: null,
-    name: "Michael",
+    name: "Chris",
     percent: null,
     currentPlayerBet: 0,
   });
@@ -90,7 +90,7 @@ function App(props) {
     action: "",
     card1: null,
     card2: null,
-    name: "Andrew",
+    name: "Vas",
     percent: null,
     currentPlayerBet: 0,
   });
@@ -132,45 +132,40 @@ function App(props) {
   //Use Effect
 
   useEffect(() => {
-    socket.off("serialdata").on("serialdata", (serialdata) => {
-      const antenna = serialdata.data.split("antenna: ")[1][0];
-      const cardUID = serialdata.data.split("UID: ")[1].split(",")[0];
+    socket.off("sendState").on("sendState", (state) => {
+      // console.log(state.state.players);
+      state.state.players.forEach((player) => {
+        const playerGraphicsRef = getCorrectGraphicsRef(player.id);
+        const playerGraphicsSetState = getCorrectGraphicsSetState(player.id);
 
-      if (!storedCards.includes(cardUID)) {
-        storedCards.push(cardUID);
+        playerGraphicsSetState({
+          ...playerGraphicsRef.current,
+          card1: player.card1,
+          card2: player.card2,
+        });
+      });
 
-        const player = antenna2Player[antenna];
-        const cardValue = getCardValue(cardUID);
+      setCommunityCards(state.state.communityCards);
 
-        // console.log("player", player);
-        // console.log("cardValue", cardValue);
-        if (
-          player === "1" ||
-          player === "2" ||
-          player === "3" ||
-          player === "4" ||
-          player === "5"
-        ) {
-          addPlayerCardGraphics(player, cardValue);
-          recalculateAllPercentages();
-        } else if (player === "6" || player === "7" || player === "8") {
-          addCommunityCardsGraphics(cardValue);
-        }
-      }
+      recalculateAllPercentages();
     });
   }, []);
 
-  useEffect(() => {
-    try {
-      recalculateAllPercentages();
-    } catch (e) {}
-  }, [communityCards]);
+  // useEffect(() => {
+  //   try {
+  //     recalculateAllPercentages();
+  //   } catch (e) {}
+  // }, [communityCards]);
 
   useEffect(() => {
     try {
       recalculateAllPercentages();
     } catch (e) {}
   }, [inHandPlayers]);
+
+  useEffect(() => {
+    socket.emit("roundChange", round);
+  }, [round]);
 
   //FUNCTIONS
 
@@ -255,6 +250,7 @@ function App(props) {
     }
 
     const Result = Table.calculate();
+    console.log("percent Results", Result);
 
     Result.getPlayers().forEach((playerResult) => {
       const player = playerResult.getName().split("Player #")[1][0];
@@ -482,6 +478,7 @@ function App(props) {
 
     setCommunityCards([]);
     storedCards = [];
+    socket.emit("clearAllCards", {});
   };
 
   const clearAllPlayerActions = () => {
@@ -607,6 +604,25 @@ function App(props) {
     setInHandPlayers(newArray);
   };
 
+  const changePlayerName = (player, newName) => {
+    const playerGraphicsState = getCorrectGraphicsState(player);
+    const playerGraphicsSetState = getCorrectGraphicsSetState(player);
+
+    playerGraphicsSetState({
+      ...playerGraphicsState,
+      name: newName,
+    });
+  };
+
+  const changePlayersAtTable = (seatsArray) => {
+    playersAtTable = seatsArray;
+  };
+
+  const changeBlinds = (small, big) => {
+    smallBlind = small;
+    bigBlind = big;
+  };
+
   let playerGraphicsClass =
     "playerGraphics" + (round !== "Break" ? " alive" : "");
 
@@ -662,9 +678,11 @@ function App(props) {
         forceBreak={forceBreak}
         button={button}
         moveButton={moveButton}
-        addPlayerCardGraphics={addPlayerCardGraphics}
         clearAllLoadedCards={clearAllLoadedCards}
         handleAllIn={handleAllIn}
+        changePlayerName={changePlayerName}
+        changePlayersAtTable={changePlayersAtTable}
+        changeBlinds={changeBlinds}
       />
     </div>
   );
