@@ -45,11 +45,11 @@ var state = {
 var round = "Flop";
 
 const antenna2Player = {
-  1: 1,
-  2: 2,
-  3: 3,
-  4: 4,
-  5: 5,
+  1: 3,
+  2: "",
+  3: 2,
+  4: 1,
+  5: 4,
   6: 6,
   7: 7,
   8: 8,
@@ -122,9 +122,9 @@ serialport.pipe(parser);
 
 parser.on("data", (data) => {
   // console.log(data);
-  const antenna = data.split("antenna: ")[1][0];
-  const cardUID = data.split("UID: ")[1].split(",")[0];
-  // console.log(antenna, cardUID);
+  const antenna = data.split("ANTENNA: ")[1][0];
+  const cardUID = data.split("UID:")[1].split(";")[0];
+  console.log(antenna, cardUID);
 
   const card = CardDictionary[cardUID];
   const player = antenna2Player[antenna];

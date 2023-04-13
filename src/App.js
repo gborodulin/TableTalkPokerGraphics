@@ -19,23 +19,22 @@ const antenna2Player = {
   8: "5",
 };
 let storedCards = [];
-let playersAtTable = ["1", "2", "3", "4", "5"];
+let playersAtTable = ["1", "2", "3", "4"];
 let smallBlind = 0.5;
 let bigBlind = 1;
 
 function App(props) {
-  //SOCKET
-  let socket = io("http://localhost:8888", { transports: ["websocket"] });
-
   //STATE
+  const [socket, setSocket] = useState(null);
+
   const [button, setButton] = useState("5");
 
   const [player1Graphics, _setPlayer1Graphics] = useState({
     action: "",
     card1: null,
     card2: null,
-    name: "Jules",
-    percent: null,
+    name: "Leon",
+    percent: 23,
     currentPlayerBet: 0,
   });
   const player1GraphicsRef = useRef(player1Graphics);
@@ -48,8 +47,8 @@ function App(props) {
     action: "",
     card1: null,
     card2: null,
-    name: "Matt",
-    percent: null,
+    name: "Jules",
+    percent: 23,
     currentPlayerBet: 0,
   });
   const player2GraphicsRef = useRef(player2Graphics);
@@ -63,7 +62,7 @@ function App(props) {
     card1: null,
     card2: null,
     name: "Mike",
-    percent: null,
+    percent: 23,
     currentPlayerBet: 0,
   });
   const player3GraphicsRef = useRef(player3Graphics);
@@ -76,8 +75,8 @@ function App(props) {
     action: "",
     card1: null,
     card2: null,
-    name: "Chris",
-    percent: null,
+    name: "Vas",
+    percent: 23,
     currentPlayerBet: 0,
   });
   const player4GraphicsRef = useRef(player4Graphics);
@@ -90,8 +89,8 @@ function App(props) {
     action: "",
     card1: null,
     card2: null,
-    name: "Vas",
-    percent: null,
+    name: "",
+    percent: 23,
     currentPlayerBet: 0,
   });
   const player5GraphicsRef = useRef(player5Graphics);
@@ -132,6 +131,9 @@ function App(props) {
   //Use Effect
 
   useEffect(() => {
+    //SOCKET
+    setSocket("http://localhost:8888", { transports: ["websocket"] });
+
     socket.off("sendState").on("sendState", (state) => {
       // console.log(state.state.players);
       state.state.players.forEach((player) => {

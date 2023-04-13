@@ -188,13 +188,13 @@ function Console(props) {
     } else if (key === "PageUp") {
       clearAllInputStates();
       newHand();
-    } else if (key === "PageDown") {
+    } else if (key === "w") {
       forceBreak();
-    } else if (key === "F13") {
+    } else if (key === "e") {
       moveButton();
     } else if (key === "q") {
       clearAllLoadedCards();
-    } else if (key === "-") {
+    } else if (key === "a") {
       handleAllIn(player);
       correctInputSetState("ALL-IN");
 
